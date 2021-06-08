@@ -4,6 +4,8 @@ from app import db
 from cachetools import cached
 from cachetools import TTLCache
 
+import json
+
 import re
 import requests
 
@@ -32,12 +34,14 @@ def get_server_default():
 	return cfg.SERVERS[0]
 
 
-def topic_query(addr, port, querystr):
+def topic_query(addr, port, query, auth="anonymous"):
+	query_str = json.dumps({
+		"query": query,
+		"auth": auth
+	})
 
-	if querystr[0] != "?":
-		querystr = "?"+querystr
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	query = b"\x00\x83" + struct.pack('>H', len(querystr) + 6) + b"\x00\x00\x00\x00\x00" + querystr.encode() + b"\x00"
+	query = b"\x00\x83" + struct.pack('>H', len(query_str) + 6) + b"\x00\x00\x00\x00\x00" + query_str.encode() + b"\x00"
 	sock.settimeout(3)
 	sock.connect((addr, port))
 
@@ -45,49 +49,37 @@ def topic_query(addr, port, querystr):
 
 	data = sock.recv(4096)
 
-	parsed_data = urllib.parse.parse_qs(data[5:-1].decode(), keep_blank_values=True)
-	return {i:parsed_data[i][0] for i in parsed_data.keys()}
+	parsed_data = json.loads(data[5:-1].decode())
+
+	return parsed_data
 
 
 @cached(cache=TTLCache(ttl=1, maxsize=10))
-def topic_query_server(id, query, args=None):
+def topic_query_server(id, query, auth="anonymous"):
 	server = get_server(id)
 
-	return topic_query(server["host"],server["port"], query + "&" + urllib.parse.urlencode(args) if args else query)
+	return topic_query(server["host"], server["port"], query, auth)
 
 
 @cached(cache=TTLCache(ttl=5, maxsize=10))
 def fetch_server_status(id):
-	try:
-		d = topic_query_server(id, "status")
-		d["admins"] = int(d["admins"])
-		d["ai"] = bool(d["ai"])
-		d["enter"] = bool(d["enter"])
-		d["extreme_popcap"] = int(d["extreme_popcap"])
-		d["gamestate"] = int(d["gamestate"])
-		d["players"] = int(d["players"])
-		d["popcap"] = int(d["popcap"])
-		d["respawn"] = bool(d["respawn"])
-		d["round_duration"] = int(d["round_duration"])
-		d["round_id"] = int(d["round_id"])
-		d["soft_popcap"] = int(d["soft_popcap"])
-		d["shuttle_timer"] = int(d["shuttle_timer"])
-		d["vote"] = bool(d["vote"])
-	except Exception as E:
-		return {"error": str(E)}
+	d = topic_query_server(id, "status")
+	
+	if d["statuscode"] == 200:
+		return d["data"]
+	else:
+		return d
 
-	return d
 
 
 @cached(cache=TTLCache(ttl=5, maxsize=10))
 def fetch_server_players(id):
-	try:
-		d = list(topic_query_server(id, "playerlist"))
-	except Exception as E:
-		return {"error": str(E)}
+	d = topic_query_server(id, "playerlist")
 
-	return d
-
+	if d["statuscode"] == 200:
+		return d["data"]
+	else:
+		return d
 
 @cached(cache=TTLCache(ttl=10, maxsize=10))
 def fetch_server_totals():

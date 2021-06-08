@@ -1,33 +1,3 @@
-- id: 'bs_golden'
-  aliases:
-    - 'lrp'
-    - 'nrp'
-    - 'main'
-    - 'bee'
-    - 'golden'
-  name: 'BeeStation LRP'
-  nickname: 'Golden'
-  host: 'golden.beestation13.com'
-  port: 7777
-  open: true
-  color: '0, 150, 0'
-  rules_url: 'https://wiki.beestation13.com/view/Rules'
-
-- id: 'bs_sage'
-  aliases:
-    - 'mrp'
-    - 'rp'
-    - 'beerp'
-    - 'roleplay'
-    - 'sage'
-  name: 'BeeStation MRP'
-  nickname: 'Sage'
-  host: 'sage.beestation13.com'
-  port: 7878
-  open: true
-  color: '0, 0, 150'
-  rules_url: 'https://wiki.beestation13.com/view/Rules'
-
 - id: 'nsv_tupelo'
   aliases:
     - 'nsv'
@@ -35,8 +5,8 @@
     - 'ftl2'
   name: 'NSV 13'
   nickname: 'NSV'
-  host: 'game.nsv.beestation13.com'
-  port: 1337
+  host: '192.168.0.75'
+  port: 7777
   open: true
   color: '150, 0, 0'
   rules_url: 'https://nsv.beestation13.com/wiki/Rules'
