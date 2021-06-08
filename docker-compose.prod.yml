@@ -1,0 +1,20 @@
+version: '3'
+
+services: 
+  api:
+    container_name: beestation_api_app
+    image: beestation/bapi
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/site-settings:/bapi/app/config:ro
+    environment:
+      APM: 'False' #Set to True to enable APM logging
+      APM_URL: 'http://0.0.0.0:8200'
+      APM_DEBUG: 'False'
+      APM_TOKEN: '' #Leave empty if you aren't using a token
+      UWSGI_USER: 'www-data'
+      UWSGI_GROUP: 'www-data'
+      UWSGI_THREADS: 10
+      UWSGI_PROCESSES: 2
+      UWSGI_OFFLOAD_THREADS: 10

@@ -1,0 +1,10 @@
+#Auto normalize text files
+* text=auto
+
+# Files that need specific line endings
+*.sh text eol=lf
+
+# Ignore binary files
+*.png binary
+*.svg binary
+*.gif binary
