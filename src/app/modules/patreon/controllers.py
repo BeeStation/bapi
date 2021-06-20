@@ -18,7 +18,7 @@ def page_patreon_oauth():
 		if code != None and ckey != None:
 			oauth_client = patreon.OAuth(cfg.PRIVATE["patreon"]["client_id"], cfg.PRIVATE["patreon"]["client_secret"])
 
-			tokens = oauth_client.get_tokens(code, 'https://beestation13.com/patreonauth')
+			tokens = oauth_client.get_tokens(code, f"{cfg.API['website-url']}/patreonauth")
 
 			access_token = tokens['access_token']
 
@@ -31,19 +31,19 @@ def page_patreon_oauth():
 			player = db.Player.from_ckey(ckey)
 
 			if not player:
-				return redirect("/linkpatreon?error=invalidckey")
+				return redirect(f"{cfg.API['website-url']}/linkpatreon?error=invalidckey")
 			
 			db.Patreon.link(ckey, user_id)
 
-			return redirect("/linkpatreon?success=true")
+			return redirect(f"{cfg.API['website-url']}/linkpatreon?success=true")
 
 		else:
-			return redirect("/linkpatreon?error=unknown")
+			return redirect(f"{cfg.API['website-url']}/linkpatreon?error=unknown")
 
 	except Exception as E:
 		return str(E)
 	
-	return redirect("/linkpatreon?error=unknown")
+	return redirect(f"{cfg.API['website-url']}/linkpatreon?error=unknown")
 
 
 @bp_patreon.route("/linked_patreons")

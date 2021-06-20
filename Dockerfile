@@ -27,6 +27,6 @@ RUN chown -R www-data:www-data /bapi
 
 USER www-data:www-data
 
-EXPOSE 8080
+EXPOSE 8081
 
 CMD ["/usr/local/bin/uwsgi", "--ini", "/etc/uwsgi/uwsgi.ini"]

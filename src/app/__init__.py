@@ -48,7 +48,7 @@ if environ.get("APM") == "True":
 
 app.url_map.strict_slashes = False
 
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+cors = CORS(app, resources={r"*": {"origins": "*"}})
 
 
 app.config['SQLALCHEMY_BINDS'] = {

@@ -48,13 +48,12 @@ def topic_query(addr, port, query, auth="anonymous"):
 	sock.sendall(query)
 
 	data = sock.recv(4096)
-
+	
 	parsed_data = json.loads(data[5:-1].decode())
 
 	return parsed_data
 
 
-@cached(cache=TTLCache(ttl=1, maxsize=10))
 def topic_query_server(id, query, auth="anonymous"):
 	server = get_server(id)
 
@@ -71,7 +70,6 @@ def fetch_server_status(id):
 		return d
 
 
-
 @cached(cache=TTLCache(ttl=5, maxsize=10))
 def fetch_server_players(id):
 	d = topic_query_server(id, "playerlist")
@@ -80,6 +78,7 @@ def fetch_server_players(id):
 		return d["data"]
 	else:
 		return d
+
 
 @cached(cache=TTLCache(ttl=10, maxsize=10))
 def fetch_server_totals():
