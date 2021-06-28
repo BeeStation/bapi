@@ -9,6 +9,10 @@ from flask import request
 
 bp_general = Blueprint('general', __name__)
 
+@bp_general.route("/version")
+def page_version():
+	return cfg.API['version']
+
 @bp_general.route("/playerlist")
 def page_playerlist():
 	try:
