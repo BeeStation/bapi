@@ -2,7 +2,7 @@ pyyaml==5.4
 cachetools==4.0.0
 
 flask==1.1.1
-flask-cors==3.0.8
+flask-cors==3.0.9
 flask-sqlalchemy==2.5.1
 
 elastic-apm[flask]==5.10.0
