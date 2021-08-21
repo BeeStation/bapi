@@ -2,7 +2,7 @@
 FROM python:3.8-slim-buster
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3-dev default-libmysqlclient-dev build-essential
+    apt-get install -y --no-install-recommends python3-dev default-libmysqlclient-dev build-essential git
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -14,7 +14,7 @@ ENV PYTHONUNBUFFERED=1
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
-RUN apt-get autoremove build-essential --purge -y && \
+RUN apt-get autoremove build-essential git --purge -y && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /root/.cache
 
