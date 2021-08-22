@@ -37,7 +37,8 @@ def get_server_default():
 def topic_query(addr, port, query, auth="anonymous"):
 	query_str = json.dumps({
 		"query": query,
-		"auth": auth
+		"auth": auth,
+		"source": cfg.API["request-source"]
 	})
 
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

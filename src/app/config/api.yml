@@ -3,3 +3,5 @@ items-per-page: 30
 
 website-url: "https://beestation13.com"
 api-url: "https://api.beestation13.com"
+
+request-source: "bapi"
