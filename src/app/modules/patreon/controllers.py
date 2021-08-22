@@ -10,39 +10,37 @@ bp_patreon = Blueprint('patreon', __name__)
 
 @bp_patreon.route("/patreonauth")
 def page_patreon_oauth():
+	code = request.args.get('code')
+	ckey = request.args.get('state')
 
-	try:
-		code = request.args.get('code')
-		ckey = request.args.get('state')
+	if code != None and ckey != None:
+		oauth_client = patreon.OAuth(cfg.PRIVATE["patreon"]["client_id"], cfg.PRIVATE["patreon"]["client_secret"])
 
-		if code != None and ckey != None:
-			oauth_client = patreon.OAuth(cfg.PRIVATE["patreon"]["client_id"], cfg.PRIVATE["patreon"]["client_secret"])
+		tokens = oauth_client.get_tokens(code, f"{cfg.API['api-url']}/patreonauth")
 
-			tokens = oauth_client.get_tokens(code, f"{cfg.API['website-url']}/patreonauth")
+		if "error" in tokens:
+			raise Exception(tokens["error"])
 
-			access_token = tokens['access_token']
+		access_token = tokens['access_token']
 
-			api_client = patreon.API(access_token)
+		api_client = patreon.API(access_token)
 
-			user_identity = api_client.get_identity().data()
+		user_identity = api_client.get_identity().data()
 
-			user_id = user_identity.id()
+		user_id = user_identity.id()
 
-			player = db.Player.from_ckey(ckey)
+		player = db.Player.from_ckey(ckey)
 
-			if not player:
-				return redirect(f"{cfg.API['website-url']}/linkpatreon?error=invalidckey")
-			
-			db.Patreon.link(ckey, user_id)
+		if not player:
+			return redirect(f"{cfg.API['website-url']}/linkpatreon?error=invalidckey")
+		
+		db.Patreon.link(ckey, user_id)
 
-			return redirect(f"{cfg.API['website-url']}/linkpatreon?success=true")
+		return redirect(f"{cfg.API['website-url']}/linkpatreon?success=true")
 
-		else:
-			return redirect(f"{cfg.API['website-url']}/linkpatreon?error=unknown")
+	else:
+		return redirect(f"{cfg.API['website-url']}/linkpatreon?error=unknown")
 
-	except Exception as E:
-		return str(E)
-	
 	return redirect(f"{cfg.API['website-url']}/linkpatreon?error=unknown")
 
 
