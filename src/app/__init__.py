@@ -33,7 +33,7 @@ if environ.get("APM") == "True":
 	app.config['ELASTIC_APM'] = {
 		# Set required service name. Allowed characters:
 		# a-z, A-Z, 0-9, -, _, and space
-		'SERVICE_NAME': 'beesite',
+		'SERVICE_NAME': 'bapi',
 
 		# Use if APM Server requires a token
 		'SECRET_TOKEN': apm_token,
