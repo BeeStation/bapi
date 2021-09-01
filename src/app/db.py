@@ -264,6 +264,8 @@ def query_grouped_bans(order_by=Ban.id.desc(), search_query=None):
 
 	query=query.group_by(Ban.bantime, Ban.ckey)
 
+	query = query.filter(Ban.hidden == 0)
+
 	if order_by is not None:
 		query = query.order_by(order_by)
 	if search_query:
