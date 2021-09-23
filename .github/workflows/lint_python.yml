@@ -7,7 +7,7 @@ on:
     branches:
       - master
 jobs:
-  lint:
+  run_linters:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,7 +18,7 @@ jobs:
           python-version: 3.8
       - name: Install tools
         run: pip install black codespell flake8 isort safety
-      - name: Check formatting & Syntax
+      - name: Check formatting & syntax
         uses: wearerequired/lint-action@v1
         with:
           black: true
