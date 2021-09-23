@@ -1,5 +1,11 @@
 name: python_linter
-on: [pull_request, push]
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
 jobs:
   lint:
     runs-on: ubuntu-latest
