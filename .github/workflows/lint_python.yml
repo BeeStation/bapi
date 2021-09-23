@@ -26,9 +26,13 @@ jobs:
           flake8_args: "--select=E9,F63,F7,F82"
       - name: Check import sorting
         run: isort --check-only --profile black .
+        if: always()
       - name: Check requirements
         run: pip install -r requirements.txt
+        if: always()
       - name: Check for vulnerabilities
         run: safety check
+        if: always()
       - name: Spellcheck
         run: codespell
+        if: always()
