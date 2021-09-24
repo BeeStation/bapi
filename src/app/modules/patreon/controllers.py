@@ -12,9 +12,7 @@ def page_patreon_oauth():
     ckey = request.args.get("state")
 
     if code is not None and ckey is not None:
-        oauth_client = patreon.OAuth(
-            cfg.PRIVATE["patreon"]["client_id"], cfg.PRIVATE["patreon"]["client_secret"]
-        )
+        oauth_client = patreon.OAuth(cfg.PRIVATE["patreon"]["client_id"], cfg.PRIVATE["patreon"]["client_secret"])
 
         tokens = oauth_client.get_tokens(code, f"{cfg.API['api-url']}/patreonauth")
 
@@ -49,9 +47,7 @@ def page_api_get_linked_patreons():
     if request.args.get("pass") == cfg.PRIVATE["api_passwd"]:
         try:
             links = db.db_session.query(db.Patreon).all()
-            return jsonify(
-                [{"ckey": link.ckey, "patreon_id": link.patreon_id} for link in links]
-            )
+            return jsonify([{"ckey": link.ckey, "patreon_id": link.patreon_id} for link in links])
         except Exception as E:
             return jsonify({"error": str(E)})
     else:
@@ -63,8 +59,7 @@ def page_api_budget():
     income = util.get_patreon_income()
 
     current_goal = min(
-        [goal for goal in cfg.API["patreon-goals"] if goal > income]
-        or (max(cfg.API["patreon-goals"]),)
+        [goal for goal in cfg.API["patreon-goals"] if goal > income] or (max(cfg.API["patreon-goals"]),)
     )  # Find the lowest goal we haven't passed
 
     budget_stats = {

@@ -30,18 +30,10 @@ def get_server_default():
 
 
 def topic_query(addr, port, query, auth="anonymous"):
-    query_str = json.dumps(
-        {"query": query, "auth": auth, "source": cfg.API["request-source"]}
-    )
+    query_str = json.dumps({"query": query, "auth": auth, "source": cfg.API["request-source"]})
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    query = (
-        b"\x00\x83"
-        + struct.pack(">H", len(query_str) + 6)
-        + b"\x00\x00\x00\x00\x00"
-        + query_str.encode()
-        + b"\x00"
-    )
+    query = b"\x00\x83" + struct.pack(">H", len(query_str) + 6) + b"\x00\x00\x00\x00\x00" + query_str.encode() + b"\x00"
     sock.settimeout(3)
     sock.connect((addr, port))
 
@@ -93,9 +85,7 @@ def fetch_server_totals():
 @cached(cache=TTLCache(ttl=30, maxsize=1))
 def get_patreon_income():
     try:
-        data = requests.get(
-            "https://www.patreon.com/api/campaigns/1671674", timeout=2
-        ).json()["data"]["attributes"]
+        data = requests.get("https://www.patreon.com/api/campaigns/1671674", timeout=2).json()["data"]["attributes"]
 
         pledge_sum = data["campaign_pledge_sum"]
 

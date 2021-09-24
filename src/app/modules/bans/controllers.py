@@ -20,9 +20,7 @@ def page_bans():
 
     length = query.count()
 
-    displayed_bans = query.offset((page - 1) * cfg.API["items-per-page"]).limit(
-        cfg.API["items-per-page"]
-    )
+    displayed_bans = query.offset((page - 1) * cfg.API["items-per-page"]).limit(cfg.API["items-per-page"])
 
     return jsonify(
         {

@@ -59,19 +59,12 @@ class Player(sqlalchemy_ext.Model):
         )
 
     def get_bans(self):
-        return (
-            query_grouped_bans()
-            .filter(Ban.ckey == self.ckey)
-            .order_by(Ban.bantime.desc())
-            .all()
-        )
+        return query_grouped_bans().filter(Ban.ckey == self.ckey).order_by(Ban.bantime.desc()).all()
 
     def get_role_time(self, role):
         try:
             time_for_role = (
-                db_session.query(RoleTime)
-                .filter(and_(RoleTime.ckey == self.ckey, RoleTime.job == role))
-                .one()
+                db_session.query(RoleTime).filter(and_(RoleTime.ckey == self.ckey, RoleTime.job == role)).one()
             )
 
             return time_for_role.minutes
@@ -92,8 +85,7 @@ class Player(sqlalchemy_ext.Model):
                 .filter(
                     and_(
                         RoleTime.ckey == self.ckey,
-                        RoleTime.job
-                        != "Living",  # probably not the best way to do this but.... UGHHH
+                        RoleTime.job != "Living",  # probably not the best way to do this but.... UGHHH
                         RoleTime.job != "Ghost",
                         RoleTime.job != "Admin",
                         RoleTime.job != "Mentor",
@@ -259,12 +251,7 @@ class Ban(sqlalchemy_ext.Model):
             single_from_id = cls.from_id(id)
 
             return (
-                db_session.query(
-                    *(
-                        [c for c in cls.__table__.c]
-                        + [func.group_concat(Ban.role).label("roles")]
-                    )
-                )
+                db_session.query(*([c for c in cls.__table__.c] + [func.group_concat(Ban.role).label("roles")]))
                 .group_by(cls.bantime, cls.ckey)
                 .filter(
                     cls.ckey == single_from_id.ckey,
@@ -283,16 +270,12 @@ class Ban(sqlalchemy_ext.Model):
             "bantime": ban.bantime,
             "server_name": ban.server_name,
             "round_id": ban.round_id,
-            "roles": ban.roles.split(",")
-            if hasattr(ban, "roles")
-            else ban.role,  # grouped ban bs
+            "roles": ban.roles.split(",") if hasattr(ban, "roles") else ban.role,  # grouped ban bs
             "expiration_time": ban.expiration_time if ban.expiration_time else None,
             "reason": ban.reason,
             "ckey": ban.ckey,
             "a_ckey": ban.a_ckey,
-            "unbanned_datetime": ban.unbanned_datetime
-            if ban.unbanned_datetime
-            else None,
+            "unbanned_datetime": ban.unbanned_datetime if ban.unbanned_datetime else None,
             "unbanned_ckey": ban.unbanned_ckey,
             "global_ban": ban.global_ban,
         }
