@@ -1,33 +1,33 @@
-from app import cfg
-from app import db
-from app import util
-
-from flask import Blueprint, jsonify, render_template, request
-
 import math
 
-bp_bans = Blueprint('bans', __name__)
+from flask import Blueprint, jsonify, request
+
+from app import cfg, db
+
+bp_bans = Blueprint("bans", __name__)
+
 
 @bp_bans.route("/bans")
 def page_bans():
-	page = request.args.get('page', type=int, default=1)
-	page = max(min(page, 1_000_000), 1) # Arbitrary number. We probably won't ever have to deal with 1,000,000 pages of bans. Hopefully..
+    page = request.args.get("page", type=int, default=1)
+    page = max(
+        min(page, 1_000_000), 1
+    )  # Arbitrary number. We probably won't ever have to deal with 1,000,000 pages of bans. Hopefully..
 
-	search_query = request.args.get('search_query', type=str, default="")
+    search_query = request.args.get("search_query", type=str, default="")
 
-	query = db.query_grouped_bans(search_query=search_query)
-	
-	length = query.count()
+    query = db.query_grouped_bans(search_query=search_query)
 
-	displayed_bans = query.offset((page-1)*cfg.API["items-per-page"]).limit(cfg.API["items-per-page"])
+    length = query.count()
 
-	return jsonify({
-		"page": page,
-		"pages": math.ceil(length / cfg.API["items-per-page"]),
-		"page_length": cfg.API["items-per-page"],
-		"total_length": length,
+    displayed_bans = query.offset((page - 1) * cfg.API["items-per-page"]).limit(cfg.API["items-per-page"])
 
-		"data": [
-			 db.Ban.to_public_dict(ban) for ban in displayed_bans
-		]
-	})
+    return jsonify(
+        {
+            "page": page,
+            "pages": math.ceil(length / cfg.API["items-per-page"]),
+            "page_length": cfg.API["items-per-page"],
+            "total_length": length,
+            "data": [db.Ban.to_public_dict(ban) for ban in displayed_bans],
+        }
+    )
