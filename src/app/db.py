@@ -1,15 +1,5 @@
-from sqlalchemy import (
-    Column,
-    Date,
-    DateTime,
-    Enum,
-    Integer,
-    SmallInteger,
-    String,
-    Text,
-    and_,
-    func,
-)
+from sqlalchemy import (Column, Date, DateTime, Enum, Integer, SmallInteger,
+                        String, Text, and_, func)
 from sqlalchemy.orm.exc import NoResultFound
 
 from app import sqlalchemy_ext
