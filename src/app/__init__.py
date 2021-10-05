@@ -82,8 +82,12 @@ from app.resources.bans import BanListResource
 
 api.add_resource(BanListResource, "/bans")
 
-from app.resources.general import (PlayerListResource, ServerListResource,
-                                   ServerPlayerListResource, VersionResource)
+from app.resources.general import (
+    PlayerListResource,
+    ServerListResource,
+    ServerPlayerListResource,
+    VersionResource,
+)
 
 api.add_resource(VersionResource, "/version")
 api.add_resource(PlayerListResource, "/playerlist")
@@ -95,15 +99,17 @@ from app.resources.library import BookListResource, BookResource
 api.add_resource(BookListResource, "/library")
 api.add_resource(BookResource, "/library/<int:bookid>")
 
-from app.resources.patreon import (BudgetResource, LinkedPatreonListResource,
-                                   PatreonOuathResource)
+from app.resources.patreon import (
+    BudgetResource,
+    LinkedPatreonListResource,
+    PatreonOuathResource,
+)
 
 api.add_resource(PatreonOuathResource, "/patreonauth")
 api.add_resource(LinkedPatreonListResource, "/linked_patreons")
 api.add_resource(BudgetResource, "/budget")
 
-from app.resources.stats import (ServerStatsResource, StatsResource,
-                                 StatsTotalsResource)
+from app.resources.stats import ServerStatsResource, StatsResource, StatsTotalsResource
 
 api.add_resource(StatsResource, "/stats")
 api.add_resource(ServerStatsResource, "/stats/<string:id>")
