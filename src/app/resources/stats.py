@@ -1,8 +1,6 @@
-from flask import abort, jsonify
-
-from flask_restful import Resource
-
 from app import cfg, util
+from flask import abort, jsonify
+from flask_restful import Resource
 
 
 class StatsResource(Resource):

@@ -1,10 +1,8 @@
-import patreon
-
+from app import cfg, db, util
 from flask import jsonify, redirect, request
-
 from flask_restful import Resource
 
-from app import cfg, db, util
+import patreon
 
 
 class PatreonOuathResource(Resource):
