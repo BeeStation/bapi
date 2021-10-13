@@ -2,6 +2,7 @@ from os import environ
 
 from flask import Flask
 from flask_cors import CORS
+from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 
 from app import cfg
@@ -67,6 +68,8 @@ app.config["SQLALCHEMY_BINDS"] = {
 
 sqlalchemy_ext = SQLAlchemy(app)
 
+api = Api(app)
+
 
 @app.context_processor
 def context_processor():
@@ -75,22 +78,39 @@ def context_processor():
     return dict(cfg=cfg, db=db, util=util)
 
 
-from app.modules.general.controllers import bp_general
+from app.resources.bans import BanListResource
 
-app.register_blueprint(bp_general)
+api.add_resource(BanListResource, "/bans")
 
-from app.modules.bans.controllers import bp_bans
+from app.resources.general import (
+    PlayerListResource,
+    ServerListResource,
+    ServerPlayerListResource,
+    VersionResource,
+)
 
-app.register_blueprint(bp_bans)
+api.add_resource(VersionResource, "/version")
+api.add_resource(PlayerListResource, "/playerlist")
+api.add_resource(ServerPlayerListResource, "/playerlist/<string:id>")
+api.add_resource(ServerListResource, "/servers")
 
-from app.modules.library.controllers import bp_library
+from app.resources.library import BookListResource, BookResource
 
-app.register_blueprint(bp_library)
+api.add_resource(BookListResource, "/library")
+api.add_resource(BookResource, "/library/<int:bookid>")
 
-from app.modules.patreon.controllers import bp_patreon
+from app.resources.patreon import (
+    BudgetResource,
+    LinkedPatreonListResource,
+    PatreonOuathResource,
+)
 
-app.register_blueprint(bp_patreon)
+api.add_resource(PatreonOuathResource, "/patreonauth")
+api.add_resource(LinkedPatreonListResource, "/linked_patreons")
+api.add_resource(BudgetResource, "/budget")
 
-from app.modules.stats.controllers import bp_stats
+from app.resources.stats import ServerStatsResource, StatsResource, StatsTotalsResource
 
-app.register_blueprint(bp_stats)
+api.add_resource(StatsResource, "/stats")
+api.add_resource(ServerStatsResource, "/stats/<string:id>")
+api.add_resource(StatsTotalsResource, "/stats/totals")
