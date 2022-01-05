@@ -1,5 +1,5 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.8-slim-buster
+FROM python:3.10-slim-bullseye
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends python3-dev default-libmysqlclient-dev build-essential git
