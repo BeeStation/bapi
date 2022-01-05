@@ -11,7 +11,7 @@ class BookListResource(Resource):
         page = request.args.get("page", type=int, default=1)
         page = max(min(page, 1_000_000), 1)
 
-        query = db.db_session.query(db.Book).order_by(db.Book.datetime.desc())
+        query = db.db_session.query(db.Book).filter(db.Book.deleted == None).order_by(db.Book.datetime.desc())
 
         length = query.count()
 
