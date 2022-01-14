@@ -2,7 +2,7 @@
 FROM python:3.10-slim-bullseye
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends default-libmysqlclient-dev build-essential git && \
+    apt-get install -y --no-install-recommends default-libmysqlclient-dev gcc git && \
     pip install pipenv
 
 # Keeps Python from generating .pyc files in the container
@@ -15,7 +15,7 @@ ENV PYTHONUNBUFFERED=1
 COPY Pipfile* ./
 RUN pipenv install --system --deploy --ignore-pipfile
 
-RUN apt-get autoremove build-essential git --purge -y && \
+RUN apt-get autoremove gcc git --purge -y && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /root/.cache
 
