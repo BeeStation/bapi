@@ -15,9 +15,9 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: '3.10'
       - name: Install tools
-        run: pip install black codespell flake8 isort safety
+        run: pip install black codespell flake8 isort safety pipenv
       - name: Check formatting & syntax
         uses: wearerequired/lint-action@v1
         with:
@@ -28,7 +28,7 @@ jobs:
         run: isort --check-only --profile black .
         if: always()
       - name: Check requirements
-        run: pip install -r requirements.txt
+        run: pipenv install --system --deploy --ignore-pipfile
         if: always()
       - name: Check for vulnerabilities
         run: safety check

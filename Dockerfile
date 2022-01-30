@@ -1,8 +1,9 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.8-slim-buster
+FROM python:3.10-slim-bullseye
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3-dev default-libmysqlclient-dev build-essential git
+    apt-get install -y --no-install-recommends default-libmysqlclient-dev gcc git && \
+    pip install pipenv
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -11,10 +12,10 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Install pip requirements
-COPY requirements.txt .
-RUN pip3 install -r requirements.txt
+COPY Pipfile* ./
+RUN pipenv install --system --deploy --ignore-pipfile
 
-RUN apt-get autoremove build-essential git --purge -y && \
+RUN apt-get autoremove gcc git --purge -y && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /root/.cache
 
