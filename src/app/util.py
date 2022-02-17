@@ -82,7 +82,7 @@ def fetch_server_totals():
     return d
 
 
-@cached(cache=TTLCache(ttl=30, maxsize=1))
+@cached(cache=TTLCache(ttl=21600, maxsize=1))
 def get_patreon_income():
     try:
         data = requests.get("https://www.patreon.com/api/campaigns/1671674", timeout=2).json()["data"]["attributes"]
