@@ -34,5 +34,5 @@ jobs:
         run: safety check
         if: always()
       - name: Spellcheck
-        run: codespell
+        run: codespell -S .git,.github
         if: always()
