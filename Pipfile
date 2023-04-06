@@ -4,20 +4,20 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-cachetools = "~=4.0.0"
-elastic-apm = {version = "~=6.7.2", extras = ["flask"]}
-requests = "~=2.27.1"
-mysqlclient = "~=1.4.6"
+cachetools = "~=5.3.0"
+elastic-apm = {version = "~=6.15.1", extras = ["flask"]}
+requests = "~=2.28.2"
+mysqlclient = "~=2.1.1"
 patreon = {ref = "master", git = "https://github.com/Patreon/patreon-python.git"}
-PyYAML = "~=5.4"
-Flask = "~=1.1.1"
-Flask-Cors = "~=3.0.9"
+PyYAML = "~=6.0"
+Flask = "~=2.2.3"
+Flask-Cors = "~=3.0.10"
 Flask-RESTful = "~=0.3.9"
-Flask-SQLAlchemy = "~=2.5.1"
-uWSGI = "~=2.0.20"
-werkzeug = "~=2.0.2"
+Flask-SQLAlchemy = "~=3.0.3"
+uWSGI = "~=2.0.21"
+werkzeug = "~=2.2.3"
 
 [dev-packages]
 
 [requires]
-python_version = "3.10"
+python_version = "3.11"
