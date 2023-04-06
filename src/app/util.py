@@ -32,8 +32,9 @@ def get_server_default():
 
 def check_online(addr, port):
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
-        if sock.connect_ex((addr, port)) == 0:
-            return True
+        sock.settimeout(0.5)
+        if sock.connect_ex((addr, port)) != 0:
+            return False
 
 
 def topic_query(addr, port, query, auth="anonymous"):
