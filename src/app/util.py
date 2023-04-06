@@ -2,6 +2,7 @@ import json
 import re
 import socket
 import struct
+from contextlib import closing
 
 import requests
 from cachetools import TTLCache, cached
@@ -29,21 +30,32 @@ def get_server_default():
     return cfg.SERVERS[0]
 
 
+def check_online(addr, port):
+    with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
+        if sock.connect_ex((addr, port)) == 0:
+            return True
+
+
 def topic_query(addr, port, query, auth="anonymous"):
+    if check_online(addr, port) is False:
+        return {"statuscode": 503}
+
     query_str = json.dumps({"query": query, "auth": auth, "source": cfg.API["request-source"]})
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    query = b"\x00\x83" + struct.pack(">H", len(query_str) + 6) + b"\x00\x00\x00\x00\x00" + query_str.encode() + b"\x00"
-    sock.settimeout(3)
-    sock.connect((addr, port))
+    with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
+        query = (
+            b"\x00\x83" + struct.pack(">H", len(query_str) + 6) + b"\x00\x00\x00\x00\x00" + query_str.encode() + b"\x00"
+        )
+        sock.settimeout(3)
+        sock.connect((addr, port))
 
-    sock.sendall(query)
+        sock.sendall(query)
 
-    data = sock.recv(4096)
+        data = sock.recv(4096)
 
-    parsed_data = json.loads(data[5:-1].decode())
+        parsed_data = json.loads(data[5:-1].decode())
 
-    return parsed_data
+        return parsed_data
 
 
 def topic_query_server(id, query, auth="anonymous"):

@@ -1,18 +1,3 @@
-- id: 'bs_golden'
-  aliases:
-    - 'lrp'
-    - 'nrp'
-    - 'main'
-    - 'bee'
-    - 'golden'
-  name: 'BeeStation LRP'
-  nickname: 'Golden'
-  host: 'golden.beestation13.com'
-  port: 7777
-  open: true
-  color: '0, 150, 0'
-  rules_url: 'https://wiki.beestation13.com/view/Rules'
-
 - id: 'bs_sage'
   aliases:
     - 'mrp'

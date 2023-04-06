@@ -1,6 +1,6 @@
 name: python_linter
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - master
   push:
@@ -15,11 +15,11 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10'
+          python-version: '3.11'
       - name: Install tools
         run: pip install black codespell flake8 isort safety pipenv
       - name: Check formatting & syntax
-        uses: wearerequired/lint-action@v1
+        uses: wearerequired/lint-action@v2
         with:
           black: true
           flake8: true
@@ -34,5 +34,5 @@ jobs:
         run: safety check
         if: always()
       - name: Spellcheck
-        run: codespell
+        run: codespell -S .git,.github
         if: always()
