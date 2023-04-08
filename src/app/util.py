@@ -34,7 +34,7 @@ def topic_query(addr, port, query, auth="anonymous"):
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     query = b"\x00\x83" + struct.pack(">H", len(query_str) + 6) + b"\x00\x00\x00\x00\x00" + query_str.encode() + b"\x00"
-    sock.settimeout(3)
+    sock.settimeout(0.5)
     sock.connect((addr, port))
 
     sock.sendall(query)
