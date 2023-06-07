@@ -2,15 +2,13 @@ from os import environ
 
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-
 from flask import Flask, abort, redirect
-from flask_cors import CORS
-from flask_restful import Api
 from flask_apispec import FlaskApiSpec
+from flask_cors import CORS
 from flask_marshmallow import Marshmallow
+from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_swagger_ui import get_swaggerui_blueprint
-
 from webargs.flaskparser import parser
 
 parser.location = "query"

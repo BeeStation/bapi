@@ -1,7 +1,7 @@
 import math
 
 from flask import abort, jsonify, request
-from flask_apispec import MethodResource, use_kwargs, marshal_with, doc
+from flask_apispec import MethodResource, doc, marshal_with, use_kwargs
 from flask_restful import Resource
 from marshmallow import Schema, fields
 

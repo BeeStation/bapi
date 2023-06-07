@@ -1,10 +1,9 @@
 import math
 
 from flask import jsonify, request
-from flask_apispec import MethodResource, use_kwargs, marshal_with, doc
+from flask_apispec import MethodResource, doc, marshal_with, use_kwargs
 from flask_restful import Resource
-from marshmallow import schema, fields
-
+from marshmallow import fields, schema
 
 from app import cfg, db, ma_ext
 from app.schemas import *
