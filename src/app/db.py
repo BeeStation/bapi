@@ -12,7 +12,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm.exc import NoResultFound
 
-from app import sqlalchemy_ext
+from app import sqlalchemy_ext, ma_ext
 
 db_session = sqlalchemy_ext.session
 

@@ -2,12 +2,12 @@ import patreon
 from flask import jsonify, redirect, request
 from flask_apispec import MethodResource, use_kwargs, marshal_with, doc
 from flask_restful import Resource
-from marshmallow import schema, fields
+from marshmallow import Schema, fields
 
-from app import cfg, db, util
+from app import cfg, db, util, ma_ext
+from app.schemas import *
 
-
-class PatreonOuathResource(Resource):
+class PatreonOuathResource(MethodResource):
     @doc(description="Patreon oauth callback.")
     def get(self):
         code = request.args.get("code")
@@ -42,7 +42,7 @@ class PatreonLinkSchema(Schema):
     ckey = fields.String()
     patreon_id = fields.String()
 
-class LinkedPatreonListResource(Resource):
+class LinkedPatreonListResource(MethodResource):
     @marshal_with(PatreonLinkSchema(many=True))
     @use_kwargs(APIPasswordRequiredSchema)
     @doc(description="Get a list of linked ckey-Patreon accounts.")
@@ -62,7 +62,7 @@ class BudgetSchema(Schema):
     goal = fields.Integer()
     percent = fields.Integer()
 
-class BudgetResource(Resource):
+class BudgetResource(MethodResource):
     @marshal_with(BudgetSchema)
     @doc(description="Get Patreon donation goal information.")
     def get(self):

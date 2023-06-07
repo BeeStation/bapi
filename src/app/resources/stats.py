@@ -1,11 +1,12 @@
 from flask import abort, jsonify
 from flask_apispec import MethodResource, use_kwargs, marshal_with, doc
 from flask_restful import Resource
-from marshmallow import schema, fields
+from marshmallow import Schema, fields
 
-from app import cfg, util
+from app import cfg, util, ma_ext
+from app.schemas import *
 
-class StatsResource(Resource):
+class StatsResource(MethodResource):
     @doc(description="Returns the JSON data from the ?status game query of all servers.")
     def get(self):
         try:
@@ -24,7 +25,7 @@ class StatsResource(Resource):
             abort(500, {"error": str(E)})
 
 
-class ServerStatsResource(Resource):
+class ServerStatsResource(MethodResource):
     @doc(description="Returns the JSON data from the ?status game query of the specified server.")
     def get(self, id):
         if not util.get_server(id):
@@ -41,7 +42,7 @@ class StatsTotalsSchema(Schema):
     total_rounds = fields.Integer()
     total_connections = fields.Integer()
 
-class StatsTotalsResource(Resource):
+class StatsTotalsResource(MethodResource):
     @doc(description="Returns total unique players, total rounds, and total connections.")
     @marshal_with(StatsTotalsSchema)
     def get(self):

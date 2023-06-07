@@ -3,17 +3,18 @@ import math
 from flask import abort, jsonify, request
 from flask_apispec import MethodResource, use_kwargs, marshal_with, doc
 from flask_restful import Resource
-from marshmallow import schema, fields
+from marshmallow import Schema, fields
 
-from app import cfg, db
+from app import cfg, db, ma_ext
+from app.schemas import *
 
 
-class BookListResource(Resource):
+class BookListResource(MethodResource):
     @doc(description="Get a paginated list of library books.")
     @use_kwargs(PaginationQuerySchema)
     @marshal_with(PaginationResultSchema)
-    def get(self):
-        page = max(min(kwargs.get("page", type=int, default=1), 1_000_000))
+    def get(self, **kwargs):
+        page = max(min(kwargs.get("page") or 1, 1_000_000), 1)
         query = db.db_session.query(db.Book).filter(db.Book.deleted == None).order_by(db.Book.datetime.desc())
         length = query.count()
         displayed_books = query.offset((page - 1) * cfg.API["items-per-page"]).limit(cfg.API["items-per-page"])
@@ -29,10 +30,10 @@ class BookListResource(Resource):
         )
 
 
-class BookResource(Resource):
+class BookResource(MethodResource):
     @doc(description="Get a single book from its `bookid`.")
-    @marshal_with(BookSchema)
+    @marshal_with(db.BookSchema)
     def get(self, bookid):
         book = db.Book.from_id(bookid)
-        if not book: abort(404)
+        if not book: abort(404, {"error": "book not found"})
         return book

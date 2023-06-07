@@ -6,15 +6,15 @@ from flask_restful import Resource
 from marshmallow import schema, fields
 
 
-from app import cfg, db
+from app import cfg, db, ma_ext
 from app.schemas import *
 
-class BanListResource(Resource):
+class BanListResource(MethodResource):
     @doc(description="Get a paginated list of bans.")
     @use_kwargs(PaginationSearchQuerySchema)
     @marshal_with(PaginationResultSchema)
     def get(self, **kwargs):
-        page = max(min(kwargs.get("page", type=int, default=1), 1_000_000))
+        page = max(min(kwargs.get("page") or 1, 1_000_000), 1)
         query = db.query_grouped_bans(search_query=kwargs.get("search_query"))
         length = query.count()
 
