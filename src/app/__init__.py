@@ -12,6 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_swagger_ui import get_swaggerui_blueprint
 
 from webargs.flaskparser import parser
+
 parser.location = "query"
 
 from app import cfg
@@ -54,14 +55,14 @@ if environ.get("APM") == "True":
     apm = ElasticAPM(app)
 
 
-app.config['APISPEC_SPEC'] = APISpec(
-    title='BeeStation API',
-    version='v2',
-    openapi_version='2.0',
+app.config["APISPEC_SPEC"] = APISpec(
+    title="BeeStation API",
+    version="v2",
+    openapi_version="2.0",
     plugins=[MarshmallowPlugin()],
 )
 
-app.config['APISPEC_SWAGGER_URL'] = '/docs_json'
+app.config["APISPEC_SWAGGER_URL"] = "/docs_json"
 
 app.url_map.strict_slashes = False
 
@@ -91,6 +92,7 @@ api = Api(app)
 
 ma_ext = Marshmallow(app)
 docs_ext = FlaskApiSpec(app)
+
 
 # This error handler is necessary for usage with Flask-RESTful
 @parser.error_handler
@@ -149,13 +151,8 @@ docs_ext.register(ServerStatsResource)
 docs_ext.register(StatsTotalsResource)
 
 # Register the swagger docs blueprint
-app.register_blueprint(get_swaggerui_blueprint(
-    "/docs",
-    "/docs_json",
-    config={
-        "app_name": "BeeStation API"
-    }
-))
+app.register_blueprint(get_swaggerui_blueprint("/docs", "/docs_json", config={"app_name": "BeeStation API"}))
+
 
 @app.route("/")
 def docs_redirect():

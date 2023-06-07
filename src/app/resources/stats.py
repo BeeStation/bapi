@@ -6,6 +6,7 @@ from marshmallow import Schema, fields
 from app import cfg, util, ma_ext
 from app.schemas import *
 
+
 class StatsResource(MethodResource):
     @doc(description="Returns the JSON data from the ?status game query of all servers.")
     def get(self):
@@ -41,6 +42,7 @@ class StatsTotalsSchema(Schema):
     total_players = fields.Integer()
     total_rounds = fields.Integer()
     total_connections = fields.Integer()
+
 
 class StatsTotalsResource(MethodResource):
     @doc(description="Returns total unique players, total rounds, and total connections.")

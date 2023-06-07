@@ -9,6 +9,7 @@ from marshmallow import schema, fields
 from app import cfg, db, ma_ext
 from app.schemas import *
 
+
 class BanListResource(MethodResource):
     @doc(description="Get a paginated list of bans.")
     @use_kwargs(PaginationSearchQuerySchema)
@@ -25,5 +26,5 @@ class BanListResource(MethodResource):
             "pages": math.ceil(length / cfg.API["items-per-page"]),
             "page_length": cfg.API["items-per-page"],
             "total_length": length,
-            "data": [db.Ban.to_public_dict(ban) for ban in displayed_bans]
+            "data": [db.Ban.to_public_dict(ban) for ban in displayed_bans],
         }

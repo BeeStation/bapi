@@ -35,5 +35,6 @@ class BookResource(MethodResource):
     @marshal_with(db.BookSchema)
     def get(self, bookid):
         book = db.Book.from_id(bookid)
-        if not book: abort(404, {"error": "book not found"})
+        if not book:
+            abort(404, {"error": "book not found"})
         return book

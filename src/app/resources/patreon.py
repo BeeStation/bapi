@@ -7,6 +7,7 @@ from marshmallow import Schema, fields
 from app import cfg, db, util, ma_ext
 from app.schemas import *
 
+
 class PatreonOuathResource(MethodResource):
     @doc(description="Patreon oauth callback.")
     def get(self):
@@ -42,6 +43,7 @@ class PatreonLinkSchema(Schema):
     ckey = fields.String()
     patreon_id = fields.String()
 
+
 class LinkedPatreonListResource(MethodResource):
     @marshal_with(PatreonLinkSchema(many=True))
     @use_kwargs(APIPasswordRequiredSchema)
@@ -61,6 +63,7 @@ class BudgetSchema(Schema):
     income = fields.Integer()
     goal = fields.Integer()
     percent = fields.Integer()
+
 
 class BudgetResource(MethodResource):
     @marshal_with(BudgetSchema)

@@ -191,6 +191,7 @@ class Book(sqlalchemy_ext.Model):
         except NoResultFound:
             return None
 
+
 class BookSchema(ma_ext.SQLAlchemyAutoSchema):
     class Meta:
         model = Book
