@@ -25,7 +25,7 @@ class BookListResource(MethodResource):
                 "pages": math.ceil(length / cfg.API["items-per-page"]),
                 "page_length": cfg.API["items-per-page"],
                 "total_length": length,
-                "data": [book.to_public_dict() for book in displayed_books],
+                "data": [db.BookSchema().dump(book) for book in displayed_books],
             }
         )
 
