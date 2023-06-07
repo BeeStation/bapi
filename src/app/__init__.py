@@ -3,7 +3,10 @@ from os import environ
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
+from flask_apispec import FlaskApiSpec
+from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
+from flask_swagger_ui import get_swaggerui_blueprint
 
 from app import cfg
 
@@ -44,6 +47,8 @@ if environ.get("APM") == "True":
 
     apm = ElasticAPM(app)
 
+app.config['APISPEC_SWAGGER_URL'] = '/docs_json'
+
 app.url_map.strict_slashes = False
 
 cors = CORS(app, resources={r"*": {"origins": "*"}})
@@ -70,6 +75,17 @@ sqlalchemy_ext = SQLAlchemy(app)
 
 api = Api(app)
 
+ma_ext = Marshmallow(app)
+docs_ext = FlaskApiSpec(app)
+
+# Register the swagger docs blueprint
+app.register_blueprint(get_swaggerui_blueprint(
+    "/",
+    "/docs_json",
+    config={
+        "app_name": "BeeStation API"
+    }
+))
 
 @app.context_processor
 def context_processor():
