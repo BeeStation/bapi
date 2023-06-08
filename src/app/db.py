@@ -12,7 +12,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm.exc import NoResultFound
 
-from app import sqlalchemy_ext
+from app import ma_ext, sqlalchemy_ext
 
 db_session = sqlalchemy_ext.session
 
@@ -191,18 +191,10 @@ class Book(sqlalchemy_ext.Model):
         except NoResultFound:
             return None
 
-    def to_public_dict(self):
-        return {
-            "id": self.id,
-            "author": self.author,
-            "title": self.title,
-            "content": self.content,
-            "category": self.category,
-            "ckey": self.ckey,
-            "datetime": self.datetime,
-            "deleted": self.deleted,
-            "round_id_created": self.round_id_created,
-        }
+
+class BookSchema(ma_ext.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Book
 
 
 class Ban(sqlalchemy_ext.Model):

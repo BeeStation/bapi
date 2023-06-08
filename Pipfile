@@ -11,11 +11,15 @@ mysqlclient = "~=2.1.1"
 patreon = {ref = "master", git = "https://github.com/Patreon/patreon-python.git"}
 PyYAML = "~=6.0"
 Flask = "~=2.2.3"
+flask-apispec = "~=0.11.0"
+flask-marshmallow = "~=0.14.0"
+flask-swagger-ui = "~=4.11.1"
 Flask-Cors = "~=3.0.10"
 Flask-RESTful = "~=0.3.9"
 Flask-SQLAlchemy = "~=3.0.3"
 uWSGI = "~=2.0.21"
 werkzeug = "~=2.2.3"
+marshmallow-sqlalchemy = "==0.26.1"
 
 [dev-packages]
 
