@@ -18,7 +18,7 @@ else
 
     ACTIVE_DIR=$PWD
     TMPDIR=$(mktemp -d)
-    
+
     cd $TMPDIR
     git init -q
     git remote add origin https://github.com/BeeStation/bapi

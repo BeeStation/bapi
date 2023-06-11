@@ -1,9 +1,9 @@
-from flask import abort, jsonify
-from flask_apispec import MethodResource, doc, marshal_with, use_kwargs
-from flask_restful import Resource
-from marshmallow import fields, schema
-
-from bapi import cfg, ma_ext, util
+from bapi import cfg
+from bapi import util
+from flask import abort
+from flask import jsonify
+from flask_apispec import doc
+from flask_apispec import MethodResource
 
 
 class VersionResource(MethodResource):

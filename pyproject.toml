@@ -61,3 +61,7 @@ warn_return_any = true
 warn_unreachable = true
 warn_unused_configs = true
 no_implicit_reexport = true
+
+[[tool.mypy.overrides]]
+module = "bapi.db"
+disable_error_code = "name-defined"

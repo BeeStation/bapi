@@ -1,12 +1,13 @@
 import math
 
-from flask import jsonify, request
-from flask_apispec import MethodResource, doc, marshal_with, use_kwargs
-from flask_restful import Resource
-from marshmallow import fields, schema
-
-from bapi import cfg, db, ma_ext
-from bapi.schemas import *
+from bapi import cfg
+from bapi import db
+from bapi.schemas import PaginationResultSchema
+from bapi.schemas import PaginationSearchQuerySchema
+from flask_apispec import doc
+from flask_apispec import marshal_with
+from flask_apispec import MethodResource
+from flask_apispec import use_kwargs
 
 
 class BanListResource(MethodResource):

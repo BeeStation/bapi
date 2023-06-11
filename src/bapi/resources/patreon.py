@@ -1,11 +1,17 @@
 import patreon
-from flask import jsonify, redirect, request
-from flask_apispec import MethodResource, doc, marshal_with, use_kwargs
-from flask_restful import Resource
-from marshmallow import Schema, fields
-
-from bapi import cfg, db, ma_ext, util
-from bapi.schemas import *
+from bapi import cfg
+from bapi import db
+from bapi import util
+from bapi.schemas import APIPasswordRequiredSchema
+from flask import jsonify
+from flask import redirect
+from flask import request
+from flask_apispec import doc
+from flask_apispec import marshal_with
+from flask_apispec import MethodResource
+from flask_apispec import use_kwargs
+from marshmallow import fields
+from marshmallow import Schema
 
 
 class PatreonOuathResource(MethodResource):

@@ -1,18 +1,16 @@
-from sqlalchemy import (
-    Column,
-    Date,
-    DateTime,
-    Enum,
-    Integer,
-    SmallInteger,
-    String,
-    Text,
-    and_,
-    func,
-)
+from bapi import ma_ext
+from bapi import sqlalchemy_ext
+from sqlalchemy import and_
+from sqlalchemy import Column
+from sqlalchemy import Date
+from sqlalchemy import DateTime
+from sqlalchemy import Enum
+from sqlalchemy import func
+from sqlalchemy import Integer
+from sqlalchemy import SmallInteger
+from sqlalchemy import String
+from sqlalchemy import Text
 from sqlalchemy.orm.exc import NoResultFound
-
-from bapi import ma_ext, sqlalchemy_ext
 
 db_session = sqlalchemy_ext.session
 
@@ -187,7 +185,7 @@ class Book(sqlalchemy_ext.Model):
     @classmethod
     def from_id(cls, id):
         try:
-            return db_session.query(cls).filter(cls.id == id, cls.deleted == None).one()
+            return db_session.query(cls).filter(cls.id == id, cls.deleted is None).one()
         except NoResultFound:
             return None
 

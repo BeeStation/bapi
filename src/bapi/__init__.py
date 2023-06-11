@@ -2,7 +2,23 @@ from os import environ
 
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-from flask import Flask, abort, redirect
+from bapi import cfg
+from bapi.resources.bans import BanListResource
+from bapi.resources.general import PlayerListResource
+from bapi.resources.general import ServerListResource
+from bapi.resources.general import ServerPlayerListResource
+from bapi.resources.general import VersionResource
+from bapi.resources.library import BookListResource
+from bapi.resources.library import BookResource
+from bapi.resources.patreon import BudgetResource
+from bapi.resources.patreon import LinkedPatreonListResource
+from bapi.resources.patreon import PatreonOuathResource
+from bapi.resources.stats import ServerStatsResource
+from bapi.resources.stats import StatsResource
+from bapi.resources.stats import StatsTotalsResource
+from flask import abort
+from flask import Flask
+from flask import redirect
 from flask_apispec import FlaskApiSpec
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
@@ -12,8 +28,6 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from webargs.flaskparser import parser
 
 parser.location = "query"
-
-from bapi import cfg
 
 app = Flask(__name__)
 
@@ -28,7 +42,7 @@ if environ.get("APM") == "True":
     from elasticapm.contrib.flask import ElasticAPM
 
     apm_url = "http://0.0.0.0:8200"
-    apm_debug = False
+    apm_debug = "False"
     apm_token = ""
 
     # Check for APM environ variables
@@ -47,7 +61,7 @@ if environ.get("APM") == "True":
         "SECRET_TOKEN": apm_token,
         # Set custom APM Server URL (default: http://0.0.0.0:8200)
         "SERVER_URL": apm_url,
-        "DEBUG": apm_debug,
+        "DEBUG": bool(apm_debug),
     }
 
     apm = ElasticAPM(app)
@@ -98,17 +112,9 @@ def handle_request_parsing_error(err, req, schema, *, error_status_code, error_h
     abort(400, err.messages)
 
 
-from bapi.resources.bans import BanListResource
-
 api.add_resource(BanListResource, "/bans")
 docs_ext.register(BanListResource)
 
-from bapi.resources.general import (
-    PlayerListResource,
-    ServerListResource,
-    ServerPlayerListResource,
-    VersionResource,
-)
 
 api.add_resource(VersionResource, "/version")
 api.add_resource(PlayerListResource, "/playerlist")
@@ -119,18 +125,12 @@ docs_ext.register(PlayerListResource)
 docs_ext.register(ServerPlayerListResource)
 docs_ext.register(ServerListResource)
 
-from bapi.resources.library import BookListResource, BookResource
 
 api.add_resource(BookListResource, "/library")
 api.add_resource(BookResource, "/library/<int:bookid>")
 docs_ext.register(BookListResource)
 docs_ext.register(BookResource)
 
-from bapi.resources.patreon import (
-    BudgetResource,
-    LinkedPatreonListResource,
-    PatreonOuathResource,
-)
 
 api.add_resource(PatreonOuathResource, "/patreonauth")
 api.add_resource(LinkedPatreonListResource, "/linked_patreons")
@@ -139,7 +139,6 @@ docs_ext.register(PatreonOuathResource)
 docs_ext.register(LinkedPatreonListResource)
 docs_ext.register(BudgetResource)
 
-from bapi.resources.stats import ServerStatsResource, StatsResource, StatsTotalsResource
 
 api.add_resource(StatsResource, "/stats")
 api.add_resource(ServerStatsResource, "/stats/<string:id>")
