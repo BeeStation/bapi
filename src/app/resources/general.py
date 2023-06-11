@@ -13,11 +13,10 @@ class VersionResource(MethodResource):
         return cfg.VERSION
 
 
-
 class PlayerListResource(MethodResource):
     @use_kwargs(APIPasswordRequiredSchema)
     @doc(description="Get a list of currently playing CKEYs on all servers.")
-    def get(self,  api_pass):
+    def get(self, api_pass):
         if api_pass == cfg.PRIVATE["api_passwd"]:
             try:
                 d = {}
