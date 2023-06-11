@@ -6,7 +6,7 @@ import struct
 import requests
 from cachetools import TTLCache, cached
 
-from app import cfg, db
+from bapi import cfg, db
 
 
 def to_ckey(byondkey):

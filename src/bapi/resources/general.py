@@ -3,8 +3,7 @@ from flask_apispec import MethodResource, doc, marshal_with, use_kwargs
 from flask_restful import Resource
 from marshmallow import fields, schema
 
-from app import cfg, ma_ext, util
-from app.schemas import APIPasswordRequiredSchema
+from bapi import cfg, ma_ext, util
 
 
 class VersionResource(MethodResource):

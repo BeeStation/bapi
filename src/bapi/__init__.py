@@ -13,7 +13,7 @@ from webargs.flaskparser import parser
 
 parser.location = "query"
 
-from app import cfg
+from bapi import cfg
 
 app = Flask(__name__)
 
@@ -98,12 +98,12 @@ def handle_request_parsing_error(err, req, schema, *, error_status_code, error_h
     abort(400, err.messages)
 
 
-from app.resources.bans import BanListResource
+from bapi.resources.bans import BanListResource
 
 api.add_resource(BanListResource, "/bans")
 docs_ext.register(BanListResource)
 
-from app.resources.general import (
+from bapi.resources.general import (
     PlayerListResource,
     ServerListResource,
     ServerPlayerListResource,
@@ -119,14 +119,14 @@ docs_ext.register(PlayerListResource)
 docs_ext.register(ServerPlayerListResource)
 docs_ext.register(ServerListResource)
 
-from app.resources.library import BookListResource, BookResource
+from bapi.resources.library import BookListResource, BookResource
 
 api.add_resource(BookListResource, "/library")
 api.add_resource(BookResource, "/library/<int:bookid>")
 docs_ext.register(BookListResource)
 docs_ext.register(BookResource)
 
-from app.resources.patreon import (
+from bapi.resources.patreon import (
     BudgetResource,
     LinkedPatreonListResource,
     PatreonOuathResource,
@@ -139,7 +139,7 @@ docs_ext.register(PatreonOuathResource)
 docs_ext.register(LinkedPatreonListResource)
 docs_ext.register(BudgetResource)
 
-from app.resources.stats import ServerStatsResource, StatsResource, StatsTotalsResource
+from bapi.resources.stats import ServerStatsResource, StatsResource, StatsTotalsResource
 
 api.add_resource(StatsResource, "/stats")
 api.add_resource(ServerStatsResource, "/stats/<string:id>")

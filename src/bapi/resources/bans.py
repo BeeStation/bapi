@@ -5,8 +5,8 @@ from flask_apispec import MethodResource, doc, marshal_with, use_kwargs
 from flask_restful import Resource
 from marshmallow import fields, schema
 
-from app import cfg, db, ma_ext
-from app.schemas import *
+from bapi import cfg, db, ma_ext
+from bapi.schemas import *
 
 
 class BanListResource(MethodResource):
