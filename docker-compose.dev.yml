@@ -6,7 +6,7 @@ services:
     ports:
       - "8081:8081"
     volumes:
-      - ./src:/bapi:ro
+      - ./src:/app:ro
     environment:
       DEBUG: 'True'
       APM: 'False' #Set to True to enable APM logging
