@@ -1,0 +1,42 @@
+repos:
+  - repo: https://github.com/psf/black
+    rev: bf7a162
+    hooks:
+      - id: black
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: f71fa2c
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: debug-statements
+        language_version: python3
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: b9a7794
+    hooks:
+      - id: flake8
+        language_version: python3
+
+  - repo: https://github.com/asottile/reorder-python-imports
+    rev: b5d69d1
+    hooks:
+      - id: reorder-python-imports
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: ec0f41b
+    hooks:
+    - id: codespell
+      additional_dependencies:
+      - tomli
+
+  -   repo: https://github.com/pre-commit/mirrors-mypy
+      rev: bd424e4
+      hooks:
+      -   id: mypy
+          additional_dependencies:
+            - "types-PyYAML"
+            - "types-cachetools"
+            - "types-requests"

@@ -18,17 +18,17 @@ else
 
     ACTIVE_DIR=$PWD
     TMPDIR=$(mktemp -d)
-    
+
     cd $TMPDIR
     git init -q
     git remote add origin https://github.com/BeeStation/bapi
     git fetch --depth=5 -q
     git config core.sparseCheckout true
-    echo "src/app/config" >> .git/info/sparse-checkout
+    echo "src/bapi/config" >> .git/info/sparse-checkout
     git pull -q origin master
 
     mkdir ./config
-    mv ./src/app/config/ ./config/site-settings
+    mv ./src/bapi/config/ ./config/site-settings
     mv ./config $ACTIVE_DIR/config
     cd $ACTIVE_DIR
     rm -rf $TMPDIR

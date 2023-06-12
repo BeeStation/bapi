@@ -4,9 +4,10 @@ import socket
 import struct
 
 import requests
-from cachetools import TTLCache, cached
-
-from app import cfg, db
+from bapi import cfg
+from bapi import db
+from cachetools import cached
+from cachetools import TTLCache
 
 
 def to_ckey(byondkey):
@@ -91,5 +92,5 @@ def get_patreon_income():
 
         return pledge_sum
 
-    except:
-        return 0
+    except:  # noqa: E722
+        return 0  # noqa: E722

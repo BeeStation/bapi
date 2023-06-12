@@ -1,12 +1,15 @@
 import math
 
-from flask import abort, jsonify, request
-from flask_apispec import MethodResource, doc, marshal_with, use_kwargs
-from flask_restful import Resource
-from marshmallow import Schema, fields
-
-from app import cfg, db, ma_ext
-from app.schemas import *
+from bapi import cfg
+from bapi import db
+from bapi.schemas import PaginationQuerySchema
+from bapi.schemas import PaginationResultSchema
+from flask import abort
+from flask import jsonify
+from flask_apispec import doc
+from flask_apispec import marshal_with
+from flask_apispec import MethodResource
+from flask_apispec import use_kwargs
 
 
 class BookListResource(MethodResource):
@@ -15,7 +18,7 @@ class BookListResource(MethodResource):
     @marshal_with(PaginationResultSchema)
     def get(self, **kwargs):
         page = max(min(kwargs.get("page") or 1, 1_000_000), 1)
-        query = db.db_session.query(db.Book).filter(db.Book.deleted == None).order_by(db.Book.datetime.desc())
+        query = db.db_session.query(db.Book).filter(db.Book.deleted is None).order_by(db.Book.datetime.desc())
         length = query.count()
         displayed_books = query.offset((page - 1) * cfg.API["items-per-page"]).limit(cfg.API["items-per-page"])
 

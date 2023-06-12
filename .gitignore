@@ -8,7 +8,7 @@ venv
 *.pyc
 *.save
 
-src/app/config/private.yml
+src/bapi/config/private.yml
 
 .vscode
 .vscode/*

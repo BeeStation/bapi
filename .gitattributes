@@ -3,6 +3,7 @@
 
 # Files that need specific line endings
 *.sh text eol=lf
+*.py text eol=lf
 
 # Ignore binary files
 *.png binary

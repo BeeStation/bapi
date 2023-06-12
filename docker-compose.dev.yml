@@ -1,11 +1,11 @@
 version: '3'
 
-services: 
+services:
   api:
     build: .
     ports:
       - "8081:8081"
-    volumes: 
+    volumes:
       - ./src:/bapi:ro
     environment:
       DEBUG: 'True'
