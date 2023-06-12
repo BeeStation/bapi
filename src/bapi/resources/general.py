@@ -1,9 +1,11 @@
 from bapi import cfg
 from bapi import util
+from bapi.schemas import APIPasswordRequiredSchema
 from flask import abort
 from flask import jsonify
 from flask_apispec import doc
 from flask_apispec import MethodResource
+from flask_apispec import use_kwargs
 
 
 class VersionResource(MethodResource):
