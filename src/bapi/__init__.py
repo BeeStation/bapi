@@ -3,19 +3,6 @@ from os import environ
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from bapi import cfg
-from bapi.resources.bans import BanListResource
-from bapi.resources.general import PlayerListResource
-from bapi.resources.general import ServerListResource
-from bapi.resources.general import ServerPlayerListResource
-from bapi.resources.general import VersionResource
-from bapi.resources.library import BookListResource
-from bapi.resources.library import BookResource
-from bapi.resources.patreon import BudgetResource
-from bapi.resources.patreon import LinkedPatreonListResource
-from bapi.resources.patreon import PatreonOuathResource
-from bapi.resources.stats import ServerStatsResource
-from bapi.resources.stats import StatsResource
-from bapi.resources.stats import StatsTotalsResource
 from flask import abort
 from flask import Flask
 from flask import redirect
@@ -111,6 +98,20 @@ docs_ext = FlaskApiSpec(app)
 def handle_request_parsing_error(err, req, schema, *, error_status_code, error_headers):
     abort(400, err.messages)
 
+
+from bapi.resources.bans import BanListResource
+from bapi.resources.general import PlayerListResource
+from bapi.resources.general import ServerListResource
+from bapi.resources.general import ServerPlayerListResource
+from bapi.resources.general import VersionResource
+from bapi.resources.library import BookListResource
+from bapi.resources.library import BookResource
+from bapi.resources.patreon import BudgetResource
+from bapi.resources.patreon import LinkedPatreonListResource
+from bapi.resources.patreon import PatreonOuathResource
+from bapi.resources.stats import ServerStatsResource
+from bapi.resources.stats import StatsResource
+from bapi.resources.stats import StatsTotalsResource
 
 api.add_resource(BanListResource, "/bans")
 docs_ext.register(BanListResource)
