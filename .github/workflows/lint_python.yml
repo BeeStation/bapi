@@ -1,38 +1,37 @@
-name: python_linter
+name: CI
 on:
-  pull_request_target:
+  workflow_dispatch:
+  pull_request:
     branches:
       - master
   push:
-    branches:
-      - master
+
 jobs:
-  run_linters:
-    runs-on: ubuntu-latest
+  run_lints:
+    name: Run linters
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Python
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - name: Python setup
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
-      - name: Install tools
-        run: pip install black codespell flake8 isort safety pipenv
-      - name: Check formatting & syntax
-        uses: wearerequired/lint-action@v2
+          python-version: "3.11"
+      - name: Install poetry
+        run: |
+          python -m pip install -U poetry
+      - id: cache-poetry
+        uses: actions/cache@v3
         with:
-          black: true
-          flake8: true
-          flake8_args: "--select=E9,F63,F7,F82"
-      - name: Check import sorting
-        run: isort --check-only --profile black .
-        if: always()
-      - name: Check requirements
-        run: pipenv install --system --deploy --ignore-pipfile
-        if: always()
-      - name: Check for vulnerabilities
-        run: safety check
-        if: always()
-      - name: Spellcheck
-        run: codespell -S .git,.github
-        if: always()
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+      - name: Install dependencies
+        if: steps.cache-poetry.outputs.cache-hit != 'true'
+        run: |
+          poetry install
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: ${{ runner.os }}-pre_commit-${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Pre-commit linters
+        run: |
+          poetry run pre-commit run --show-diff-on-failure --color=always --all-files
