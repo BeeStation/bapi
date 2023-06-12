@@ -1,19 +1,25 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.11-slim-bullseye
+FROM python:3.11-slim-bullseye as base
+
+# Keeps Python from generating .pyc files in the container
+# Turns off buffering for easier container logging
+# Prevents poetry from creating a virtualenv
+ENV PYTHONFAULTHANDLER=1 \
+    PYTHONHASHSEED=random \
+    PYTHONUNBUFFERED=1 \
+	POETRY_VERSION=1.5.1 \
+	POETRY_VIRTUALENVS_CREATE=false \
+	PYTHONDONTWRITEBYTECODE=1
+
+COPY ["poetry.lock", "pyproject.toml", "./"]
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends default-libmysqlclient-dev gcc git && \
-    pip install pipenv
-
-# Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE=1
-
-# Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED=1
+    pip install "poetry==$POETRY_VERSION"
 
 # Install pip requirements
-COPY Pipfile* ./
-RUN pipenv install --system --deploy --ignore-pipfile
+
+RUN poetry install --without=dev --no-root --no-interaction --no-ansi
 
 RUN apt-get autoremove gcc git --purge -y && \
     rm -rf /var/lib/apt/lists/* && \
@@ -21,10 +27,11 @@ RUN apt-get autoremove gcc git --purge -y && \
 
 COPY server-conf/bapi_uwsgi.ini /etc/uwsgi/uwsgi.ini
 
-WORKDIR /bapi
-COPY /src /bapi
+FROM base as final
+WORKDIR /app
+COPY /src /app
 
-RUN chown -R www-data:www-data /bapi
+RUN chown -R www-data:www-data /app
 
 USER www-data:www-data
 
