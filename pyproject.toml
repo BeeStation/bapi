@@ -12,11 +12,11 @@ packages = [{include = "bapi", from = "src"}]
 python = "^3.11"
 cachetools = "~=5.3.0"
 elastic-apm = {version = "~=6.15.1", extras = ["flask"]}
-requests = "~=2.28.2"
+requests = "~=2.31.0"
 mysqlclient = "~=2.1.1"
 patreon = {git = "https://github.com/Patreon/patreon-python.git", rev = "80c83f0"}
 PyYAML = "~=6.0"
-Flask = "~=2.2.3"
+Flask = "~=2.2.5"
 flask-apispec = "~=0.11.0"
 flask-marshmallow = "~=0.14.0"
 flask-swagger-ui = "~=4.11.1"
