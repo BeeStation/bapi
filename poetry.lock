@@ -278,21 +278,37 @@ files = [
 ]
 
 [[package]]
+name = "ecs-logging"
+version = "2.0.2"
+description = "Logging formatters for ECS (Elastic Common Schema) in Python"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "ecs_logging-2.0.2-py3-none-any.whl", hash = "sha256:543ed7b634901aee465fddf70f52b6fdbd35e825e7cbcae2e664d7dfdff2f859"},
+    {file = "ecs_logging-2.0.2.tar.gz", hash = "sha256:34567bda91534a480f12117c30e1aac78489cc9a0ace172014d80f3d1e29c85b"},
+]
+
+[package.extras]
+develop = ["elastic-apm", "mock", "pytest", "pytest-cov", "structlog"]
+
+[[package]]
 name = "elastic-apm"
-version = "6.15.1"
+version = "6.16.1"
 description = "The official Python module for Elastic APM"
 category = "main"
 optional = false
 python-versions = "<4,>=3.6"
 files = [
-    {file = "elastic-apm-6.15.1.tar.gz", hash = "sha256:9bc8ec3bd5ef0a108cdb2250dcb70b700ef09f48f97f494e02becd4c7531a245"},
-    {file = "elastic_apm-6.15.1-py2.py3-none-any.whl", hash = "sha256:b704ff61ae985611b1b9846a4cc0ab88bf119c66dad6985ae169c68284aac19c"},
+    {file = "elastic-apm-6.16.1.tar.gz", hash = "sha256:ad61ceb84212b144541260e06ae51ffe61e6beccdd1480fd811512d6e46bb908"},
+    {file = "elastic_apm-6.16.1-py2.py3-none-any.whl", hash = "sha256:5e26c884cddbf1475d20772589a91ef0f66612d4607da66315ae4909bc396eff"},
 ]
 
 [package.dependencies]
 blinker = {version = "*", optional = true, markers = "extra == \"flask\""}
 certifi = "*"
-urllib3 = "*"
+ecs-logging = "*"
+urllib3 = "<2.0.0 || >2.0.0,<3.0.0"
 wrapt = ">=1.14.1"
 
 [package.extras]
@@ -1291,4 +1307,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "e469ba324a0d81a1356dc5743bb0bbc9530f7665c3e4ceb20fa07d2f9caf66e7"
+content-hash = "5d0dfb382ce12e75604e65ef5b7caa18909dfa769440d437c208c45a6d98511e"
