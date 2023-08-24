@@ -24,6 +24,8 @@ class StatsResource(MethodResource):
 
             return jsonify(d)
 
+        except TimeoutError:
+            return jsonify({"error": "timed out"})
         except Exception as E:
             abort(500, {"error": str(E)})
 
@@ -36,6 +38,8 @@ class ServerStatsResource(MethodResource):
 
         try:
             return jsonify(util.fetch_server_status(id))
+        except TimeoutError:
+            return jsonify({"error": "timed out"})
         except Exception as E:
             abort(500, {"error": str(E)})
 
