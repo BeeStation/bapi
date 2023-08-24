@@ -18,7 +18,7 @@ class BookListResource(MethodResource):
     @marshal_with(PaginationResultSchema)
     def get(self, **kwargs):
         page = max(min(kwargs.get("page") or 1, 1_000_000), 1)
-        query = db.db_session.query(db.Book).filter(db.Book.deleted is None).order_by(db.Book.datetime.desc())
+        query = db.db_session.query(db.Book).filter(db.Book.deleted.is_(None)).order_by(db.Book.datetime.desc())
         length = query.count()
         displayed_books = query.offset((page - 1) * cfg.API["items-per-page"]).limit(cfg.API["items-per-page"])
 
