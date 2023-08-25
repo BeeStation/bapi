@@ -185,7 +185,7 @@ class Book(sqlalchemy_ext.Model):
     @classmethod
     def from_id(cls, id):
         try:
-            return db_session.query(cls).filter(cls.id == id, cls.deleted is None).one()
+            return db_session.query(cls).filter(cls.id == id, cls.deleted.is_(None)).one()
         except NoResultFound:
             return None
 
