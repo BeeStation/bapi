@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bapi"
-version = "2.0"
+version = "2.1"
 description = "BeeStation public api"
 authors = ["Qwertyquerty", "Crossedfall"]
 license = "APACHE"
