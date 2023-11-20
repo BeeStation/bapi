@@ -12,3 +12,5 @@ src/bapi/config/private.yml
 
 .vscode
 .vscode/*
+
+.python-version
