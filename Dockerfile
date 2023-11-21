@@ -32,6 +32,6 @@ RUN adduser -u 82 -D -S -G www-data www-data \
 
 USER www-data:www-data
 
-EXPOSE 8080
+EXPOSE 8081
 
 CMD ["/usr/local/bin/uwsgi", "--ini", "/etc/uwsgi/uwsgi.ini"]
