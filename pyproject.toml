@@ -10,29 +10,29 @@ packages = [{include = "bapi", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-cachetools = "~=5.3.0"
-elastic-apm = {version = "~=6.16.1", extras = ["flask"]}
-requests = "~=2.31.0"
-mysqlclient = "~=2.1.1"
+cachetools = "~5.5.0"
+elastic-apm = {version = "~6.23.0", extras = ["flask"]}
+requests = "~2.32.3"
+mysqlclient = "~2.2.4"
 patreon = {git = "https://github.com/Patreon/patreon-python.git", rev = "80c83f0"}
-PyYAML = "~=6.0"
-Flask = "~=2.2.5"
-flask-apispec = "~=0.11.0"
-flask-marshmallow = "~=0.14.0"
-flask-swagger-ui = "~=4.11.1"
-Flask-Cors = "~=3.0.10"
-Flask-RESTful = "~=0.3.9"
-Flask-SQLAlchemy = "~=3.0.3"
-uWSGI = "~=2.0.21"
-werkzeug = "~=2.3.8"
-marshmallow-sqlalchemy = "~=0.26.1"
+PyYAML = "~6.0.2"
+Flask = "~3.0.3"
+flask-apispec = "~0.11.4"
+flask-marshmallow = "~1.2.1"
+flask-swagger-ui = "~4.11.1"
+Flask-Cors = "~5.0.0"
+Flask-RESTful = "~0.3.10"
+Flask-SQLAlchemy = "~3.1.1"
+uWSGI = "~2.0.26"
+werkzeug = "~3.0.4"
+marshmallow-sqlalchemy = "~1.1.0"
 
 [tool.poetry.group.dev.dependencies]
-flake8 = "^6.0.0"
-black = "^23.3.0"
-pre-commit = "^3.3.1"
-codespell = "^2.2.4"
-mypy = "^1.3.0"
+flake8 = "^7.1.1"
+black = "^24.8.0"
+pre-commit = "^3.8.0"
+codespell = "^2.3.0"
+mypy = "^1.11.2"
 
 [build-system]
 requires = ["poetry-core"]
