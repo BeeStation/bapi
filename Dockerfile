@@ -1,5 +1,5 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.12-alpine as base
+FROM python:3.12-alpine AS base
 
 # Keeps Python from generating .pyc files in the container
 # Turns off buffering for easier container logging
