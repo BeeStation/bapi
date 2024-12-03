@@ -2,6 +2,7 @@ import json
 import re
 import socket
 import struct
+from random import choice as randchoice
 
 import requests
 from bapi import cfg
@@ -83,10 +84,22 @@ def fetch_server_totals():
     return d
 
 
+# flake8: noqa: E501
 @cached(cache=TTLCache(ttl=21600, maxsize=1))
 def get_patreon_income():
     try:
-        data = requests.get("https://www.patreon.com/api/campaigns/1671674", timeout=2).json()["data"]["attributes"]
+        user_agents = [
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15"
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15",
+        ]
+        # Due to a recent change on Patreon's side, we need to pick a random user-agent to actually complete the request.
+        headers = {"User-Agent": randchoice(user_agents)}
+        data = requests.get("https://www.patreon.com/api/campaigns/1671674", timeout=2, headers=headers).json()["data"][
+            "attributes"
+        ]
 
         pledge_sum = data["campaign_pledge_sum"]
 
