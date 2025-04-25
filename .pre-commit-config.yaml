@@ -15,7 +15,7 @@ repos:
         language_version: python3
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 4b5e89b4b108a6c1a000c591d334a99a80d34c7b  # frozen: 7.2.0
+    rev: 16f5f28a384f0781bebb37a08aa45e65b9526c50  # frozen: 7.2.0
     hooks:
       - id: flake8
         language_version: python3
