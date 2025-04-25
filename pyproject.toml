@@ -10,30 +10,30 @@ packages = [{include = "bapi", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
-cachetools = "~5.5.2"
+cachetools = "~5.5.0"
 elastic-apm = {version = "~6.23.0", extras = ["flask"]}
 requests = "~2.32.3"
-mysqlclient = "~2.2.7"
+mysqlclient = "~2.2.6"
 patreon = {git = "https://github.com/Patreon/patreon-python.git", rev = "80c83f0"}
 PyYAML = "~6.0.2"
 Flask = "~3.1.0"
 flask-apispec = "~0.11.4"
-flask-marshmallow = "~1.3.0"
+flask-marshmallow = "~1.2.1"
 flask-swagger-ui = "~4.11.1"
-Flask-Cors = "~5.0.1"
+Flask-Cors = "~5.0.0"
 Flask-RESTful = "~0.3.10"
 Flask-SQLAlchemy = "~3.1.1"
-uWSGI = "~2.0.29"
+uWSGI = "~2.0.28"
 werkzeug = "~3.1.3"
-marshmallow-sqlalchemy = "~1.4.2"
-setuptools = "^79.0.1"
+marshmallow-sqlalchemy = "~1.1.0"
+setuptools = "^75.6.0"
 
 [tool.poetry.group.dev.dependencies]
-flake8 = "^7.2.0"
-black = "^25.1.0"
-pre-commit = "^4.2.0"
-codespell = "^2.4.1"
-mypy = "^1.15.0"
+flake8 = "^7.1.1"
+black = "^24.10.0"
+pre-commit = "^4.0.1"
+codespell = "^2.3.0"
+mypy = "^1.13.0"
 
 [build-system]
 requires = ["poetry-core"]
