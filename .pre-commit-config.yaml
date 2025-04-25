@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: 1b2427a2b785cc4aac97c19bb4b9a0de063f9547  # frozen: 24.10.0
+    rev: 8a737e727ac5ab2f1d4cf5876720ed276dc8dc4b  # frozen: 25.1.0
     hooks:
       - id: black
 
@@ -15,7 +15,7 @@ repos:
         language_version: python3
 
   - repo: https://github.com/PyCQA/flake8
-    rev: cf1542cefa3e766670b2066dd75c4571d682a649  # frozen: 7.1.1
+    rev: 4b5e89b4b108a6c1a000c591d334a99a80d34c7b  # frozen: 7.2.0
     hooks:
       - id: flake8
         language_version: python3
@@ -26,14 +26,14 @@ repos:
       - id: reorder-python-imports
 
   - repo: https://github.com/codespell-project/codespell
-    rev: 193cd7d27cd571f79358af09a8fb8997e54f8fff  # frozen: v2.3.0
+    rev: 63c8f8312b7559622c0d82815639671ae42132ac  # frozen: v2.4.1
     hooks:
     - id: codespell
       additional_dependencies:
       - tomli
 
   -   repo: https://github.com/pre-commit/mirrors-mypy
-      rev: f56614daa94d5cd733d3b7004c5df9caad267b4a  # frozen: v1.13.0
+      rev: f40886d54c729f533f864ed6ce584e920feb0af7  # frozen: v1.15.0
       hooks:
       -   id: mypy
           additional_dependencies:
