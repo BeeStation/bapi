@@ -105,7 +105,7 @@ def handle_request_parsing_error(err, req, schema, *, error_status_code, error_h
 
 from bapi.resources.bans import BanListResource
 from bapi.resources.discord import DiscordOauthRequestResource
-from bapi.resources.discord import DiscordOuathResource
+from bapi.resources.discord import DiscordOAuthResource
 from bapi.resources.general import PlayerListResource
 from bapi.resources.general import ServerListResource
 from bapi.resources.general import ServerPlayerListResource
@@ -114,7 +114,7 @@ from bapi.resources.library import BookListResource
 from bapi.resources.library import BookResource
 from bapi.resources.patreon import BudgetResource
 from bapi.resources.patreon import LinkedPatreonListResource
-from bapi.resources.patreon import PatreonOuathResource
+from bapi.resources.patreon import PatreonOAuthResource
 from bapi.resources.stats import ServerStatsResource
 from bapi.resources.stats import StatsResource
 from bapi.resources.stats import StatsTotalsResource
@@ -124,9 +124,9 @@ docs_ext.register(BanListResource)
 
 
 api.add_resource(DiscordOauthRequestResource, "/discord/auth")
-api.add_resource(DiscordOuathResource, "/discord/callback")
+api.add_resource(DiscordOAuthResource, "/discord/callback")
 docs_ext.register(DiscordOauthRequestResource)
-docs_ext.register(DiscordOuathResource)
+docs_ext.register(DiscordOAuthResource)
 
 
 api.add_resource(VersionResource, "/version")
@@ -145,10 +145,10 @@ docs_ext.register(BookListResource)
 docs_ext.register(BookResource)
 
 
-api.add_resource(PatreonOuathResource, "/patreonauth")
+api.add_resource(PatreonOAuthResource, "/patreonauth")
 api.add_resource(LinkedPatreonListResource, "/linked_patreons")
 api.add_resource(BudgetResource, "/budget")
-docs_ext.register(PatreonOuathResource)
+docs_ext.register(PatreonOAuthResource)
 docs_ext.register(LinkedPatreonListResource)
 docs_ext.register(BudgetResource)
 

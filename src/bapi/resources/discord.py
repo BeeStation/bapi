@@ -31,7 +31,7 @@ class DiscordOauthRequestResource(MethodResource):
         return redirect(discord_client.generate_uri(scope=["identify"], state=session["oauth2_state"]))
 
 
-class DiscordOuathResource(MethodResource):
+class DiscordOAuthResource(MethodResource):
     @doc(description="Discord oauth callback.")
     def get(self):
         code = request.args.get("code")
