@@ -1,3 +1,4 @@
+import secrets
 from os import environ
 
 from apispec import APISpec
@@ -17,6 +18,9 @@ from webargs.flaskparser import parser
 parser.location = "query"
 
 app = Flask(__name__)
+
+# Setup the ability to store session data (this is solely used for OAuth states)
+app.secret_key = secrets.token_urlsafe(32)
 
 if environ.get("DEBUG") == "True":
     from werkzeug.debug import DebuggedApplication
@@ -100,6 +104,8 @@ def handle_request_parsing_error(err, req, schema, *, error_status_code, error_h
 
 
 from bapi.resources.bans import BanListResource
+from bapi.resources.discord import DiscordOauthRequestResource
+from bapi.resources.discord import DiscordOuathResource
 from bapi.resources.general import PlayerListResource
 from bapi.resources.general import ServerListResource
 from bapi.resources.general import ServerPlayerListResource
@@ -115,6 +121,12 @@ from bapi.resources.stats import StatsTotalsResource
 
 api.add_resource(BanListResource, "/bans")
 docs_ext.register(BanListResource)
+
+
+api.add_resource(DiscordOauthRequestResource, "/discord/auth")
+api.add_resource(DiscordOuathResource, "/discord/callback")
+docs_ext.register(DiscordOauthRequestResource)
+docs_ext.register(DiscordOuathResource)
 
 
 api.add_resource(VersionResource, "/version")

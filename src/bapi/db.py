@@ -1,5 +1,8 @@
+from hashlib import sha256
+
 from bapi import ma_ext
 from bapi import sqlalchemy_ext
+from bapi.util import generate_random_session_token
 from sqlalchemy import and_
 from sqlalchemy import Column
 from sqlalchemy import Date
@@ -11,8 +14,42 @@ from sqlalchemy import SmallInteger
 from sqlalchemy import String
 from sqlalchemy import Text
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.sql.expression import text
 
 db_session = sqlalchemy_ext.session
+
+
+class Session(sqlalchemy_ext.Model):
+    __bind_key__ = "game"
+    __tablename__ = "SS13_session"
+
+    id = Column("id", Integer(), primary_key=True)
+    ip = Column("ip", Integer())
+    session_token = Column("session_token", String(64))
+    external_method = Column("external_method", String(16))
+    external_uid = Column("external_uid", String(32))
+    external_display_name = Column("external_display_name", String(32))
+    valid_until = Column("valid_until", DateTime())
+
+    @classmethod
+    def create_session(cls, ip, external_method, external_uid, external_display_name, duration_days):
+        duration_days = int(duration_days)
+        if duration_days <= 0:
+            duration_days = 90
+        random_token = generate_random_session_token()
+        # Store the sha256 hash of the token
+        random_token_hash = sha256(random_token.encode("utf-8")).hexdigest()
+        entry = cls(
+            ip=ip,
+            session_token=random_token_hash,
+            external_method=external_method,
+            external_uid=external_uid,
+            external_display_name=external_display_name,
+            valid_until=text(f"DATE_ADD(NOW(), INTERVAL {duration_days} DAY)"),
+        )
+        db_session.add(entry)
+        db_session.commit()
+        return random_token
 
 
 class Player(sqlalchemy_ext.Model):
@@ -21,6 +58,7 @@ class Player(sqlalchemy_ext.Model):
 
     ckey = Column("ckey", String(32), primary_key=True)
     byond_key = Column("byond_key", String(32))
+    discord_uid = Column("discord_uid", String(32))
     firstseen = Column("firstseen", DateTime())
     firstseen_round_id = Column("firstseen_round_id", Integer())
     lastseen = Column("lastseen", DateTime())

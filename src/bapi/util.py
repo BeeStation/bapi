@@ -1,5 +1,6 @@
 import json
 import re
+import secrets
 import socket
 import struct
 from random import choice as randchoice
@@ -9,6 +10,10 @@ from bapi import cfg
 from bapi import db
 from cachetools import cached
 from cachetools import TTLCache
+
+
+def generate_random_session_token():
+    return secrets.token_hex(64)
 
 
 def to_ckey(byondkey):

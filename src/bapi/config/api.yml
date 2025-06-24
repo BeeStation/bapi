@@ -5,3 +5,4 @@ website-url: "https://beestation13.com"
 api-url: "https://api.beestation13.com"
 
 request-source: "bapi"
+game-session-duration: 90 # valid duration of created game session tokens, in days.
