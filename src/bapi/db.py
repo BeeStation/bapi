@@ -45,7 +45,7 @@ class Session(sqlalchemy_ext.Model):
             external_method=external_method,
             external_uid=external_uid,
             external_display_name=external_display_name,
-            valid_until=text(f"DATE_ADD(NOW(), INTERVAL {duration_days} DAY)"),
+            valid_until=func.date_add(func.now(), text(f"INTERVAL {duration_days} DAY")),
         )
         db_session.add(entry)
         db_session.commit()
