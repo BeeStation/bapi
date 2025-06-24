@@ -18,7 +18,7 @@ discord_client = discordoauth2.Client(
 
 
 class DiscordOauthRequestResource(MethodResource):
-    @doc(description=("Discord oauth initatior"))
+    @doc(description=("Discord oauth initiator"))
     def get(self):
         ip = request.args.get("ip")
         if isinstance(ip, str) and ip.isdigit():
