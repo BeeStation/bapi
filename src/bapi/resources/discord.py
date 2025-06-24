@@ -62,4 +62,10 @@ class DiscordOAuthResource(MethodResource):
             return jsonify({"error": "error authorizing with Discord"})
         if discord_uid is None or discord_username is None:
             return jsonify({"error": "error authorizing with Discord"})
-        db.Session.create_session(ip, "discord", discord_uid, discord_username, cfg.API["game-session-duration"])
+        token = db.Session.create_session(
+            ip, "discord", discord_uid, discord_username, cfg.API["game-session-duration"]
+        )
+        if token is not None:
+            return jsonify({"token": token})
+        else:
+            return jsonify({"error": "error creating session"})
