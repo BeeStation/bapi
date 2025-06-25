@@ -1,0 +1,86 @@
+{% extends 'base.html' %} {% block title %}BeeStation Auth Token{% endblock %}
+{% block content %}
+<style>
+	.spoiler.hidden {
+		color: transparent;
+		user-select: none;
+	}
+	.spoiler {
+		text-align: left;
+		color: white;
+		background-color: black;
+		border-radius: 10px;
+		padding: 5px 4px;
+		word-break: break-all;
+	}
+	.spoiler.hidden:hover {
+		cursor: pointer;
+		background-color: #222;
+	}
+</style>
+<div class="center-vertical">
+	<section>
+		<h2>BeeStation Auth Token</h2>
+		<p>
+			Paste this token into the game's login box.
+			<strong>Do not share this token</strong>
+			with anyone else. If someone asks you to provide them this token, do
+			not give it to them. This token provides
+			<strong>full</strong> access to your BeeStation game server login.
+		</p>
+		<p>This token expires in {{ token_duration }} days.</p>
+		<div>
+			<span class="light">Click spoiler to show</span>
+			<br />
+			<div style="display: flex; flex-direction: row; margin-top: 4px">
+				<div
+					id="spoiler"
+					class="spoiler hidden"
+					style="margin-right: 4px; flex-grow: 1"
+					tabindex="0"
+				>
+					<strong id="myToken">{{ token }}</strong>
+				</div>
+				<button
+					id="copyBtn"
+					style="
+						font-size: large;
+						padding-left: 16px;
+						padding-right: 16px;
+					"
+					onclick="navigator.clipboard.writeText('{{ token }}');"
+					taxindex="1"
+				>
+					Copy
+				</button>
+			</div>
+		</div>
+	</section>
+</div>
+<script>
+	function showSpoiler() {
+		var spoiler = document.getElementById("spoiler");
+		spoiler.classList.remove("hidden");
+		spoiler.removeEventListener("click", showSpoiler);
+		spoiler.removeEventListener("keypress", spoilerKey);
+		spoiler.style.userSelect = "all";
+	}
+	function spoilerKey(event) {
+		if (event.key !== "Enter") {
+			return;
+		}
+		event.preventDefault();
+		showSpoiler();
+	}
+	document.getElementById("spoiler").addEventListener("click", showSpoiler);
+	document.getElementById("spoiler").addEventListener("keypress", spoilerKey);
+	function copyEnter(event) {
+		if (event.key !== "Enter") {
+			return;
+		}
+		event.preventDefault();
+		event.target.click();
+	}
+	document.getElementById("copyBtn").addEventListener("keypress", copyEnter);
+</script>
+{% endblock %}

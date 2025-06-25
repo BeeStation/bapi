@@ -104,8 +104,7 @@ def handle_request_parsing_error(err, req, schema, *, error_status_code, error_h
 
 
 from bapi.resources.bans import BanListResource
-from bapi.resources.discord import DiscordOauthRequestResource
-from bapi.resources.discord import DiscordOAuthResource
+from bapi.blueprints.discord import discord_blueprint
 from bapi.resources.general import PlayerListResource
 from bapi.resources.general import ServerListResource
 from bapi.resources.general import ServerPlayerListResource
@@ -121,12 +120,6 @@ from bapi.resources.stats import StatsTotalsResource
 
 api.add_resource(BanListResource, "/bans")
 docs_ext.register(BanListResource)
-
-
-api.add_resource(DiscordOauthRequestResource, "/discord/auth")
-api.add_resource(DiscordOAuthResource, "/discord/callback")
-docs_ext.register(DiscordOauthRequestResource)
-docs_ext.register(DiscordOAuthResource)
 
 
 api.add_resource(VersionResource, "/version")
@@ -162,6 +155,9 @@ docs_ext.register(StatsTotalsResource)
 
 # Register the swagger docs blueprint
 app.register_blueprint(get_swaggerui_blueprint("/docs", "/docs_json", config={"app_name": "BeeStation API"}))
+
+# Register Discord blueprint
+app.register_blueprint(discord_blueprint)
 
 
 @app.route("/")
