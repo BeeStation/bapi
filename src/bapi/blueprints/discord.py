@@ -1,4 +1,6 @@
+import ipaddress
 import secrets
+import urllib.parse
 
 import discordoauth2
 from bapi import cfg
@@ -23,13 +25,19 @@ discord_client = discordoauth2.Client(
 @discord_blueprint.route("/auth", methods=["GET"])
 def discord_auth():
     ip = request.args.get("ip")
-    if isinstance(ip, str) and ip.isdigit():
-        ip = int(ip)
-    if not isinstance(ip, int) or ip > 4294967296 or ip < 0:  # 2^32 (max IPv4 int)
-        return jsonify(
-            {"error": "must provide IP address. must be a valid numerical representation of an IPv4 address."}
-        )
-    session["oauth2_state"] = f"{ip},{secrets.token_urlsafe(16)}"
+    if not isinstance(ip, str):
+        return jsonify({"error": "provided IP address invalid"})
+    try:
+        ip = ipaddress.ip_address(ip)
+    except ValueError:
+        return jsonify({"error": "provided IP address invalid"})
+    if ip.version == 6:
+        return jsonify({"error": "IPv6 address not allowed"})
+    if ip.is_multicast or ip.is_unspecified:
+        return jsonify({"error": "multicast or unspecified address not allowed"})
+    session["oauth2_state"] = (
+        f"{urllib.parse.quote(ip.exploded, safe="", encoding="utf-8")},{secrets.token_urlsafe(16)}"
+    )
     return redirect(discord_client.generate_uri(scope=["identify"], state=session["oauth2_state"]))
 
 
@@ -46,7 +54,7 @@ def discord_callback():
         return jsonify({"error": "bad state"})  # let's not keep this around
     del session["oauth2_state"]
 
-    ip = int(state.split(",")[0])
+    ip = urllib.parse.unquote(state.split(",")[0])
     discord_uid = None
     discord_username = None
 

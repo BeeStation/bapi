@@ -1,3 +1,5 @@
+import socket
+import struct
 from hashlib import sha256
 
 from bapi import ma_ext
@@ -33,6 +35,7 @@ class Session(sqlalchemy_ext.Model):
 
     @classmethod
     def create_session(cls, ip, external_method, external_uid, external_display_name, duration_days):
+        ip_num = struct.unpack("!L", socket.inet_aton(ip))[0]
         duration_days = int(duration_days)
         if duration_days <= 0:
             duration_days = 90
@@ -40,7 +43,7 @@ class Session(sqlalchemy_ext.Model):
         # Store the sha256 hash of the token
         random_token_hash = sha256(random_token.encode("utf-8")).hexdigest()
         entry = cls(
-            ip=ip,
+            ip=ip_num,
             session_token=random_token_hash,
             external_method=external_method,
             external_uid=external_uid,
