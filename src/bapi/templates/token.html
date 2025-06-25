@@ -21,16 +21,29 @@
 <div class="center-vertical">
 	<section>
 		<h2>BeeStation Auth Token</h2>
-		<p>
-			Paste this token into the game's login box.
-			<strong>Do not share this token</strong>
-			with anyone else. If someone asks you to provide them this token, do
-			not give it to them. This token provides
-			<strong>full</strong> access to your BeeStation game server login.
-		</p>
 		<p>This token expires in {{ token_duration }} days.</p>
+		{%if seeker_port %}
 		<div>
-			<span class="light">Click spoiler to show</span>
+			<div style="width: 100%; display: flex; justify-content: center">
+				<button
+					id="autoBtn"
+					tabindex="2"
+					style="font-size: larger;"
+				>
+					Log In Automatically
+				</a>
+			</div>
+		</div>
+		{% endif %}
+		<p>
+			If automatic login fails, copy this token and paste it into the game's login prompt.
+		</p>
+		<p>
+			<strong>Do not share this token</strong>
+			with anyone else.
+		</p>
+		<div>
+			<span class="light">Click spoiler to show token</span>
 			<br />
 			<div style="display: flex; flex-direction: row; margin-top: 4px">
 				<div
@@ -58,6 +71,13 @@
 	</section>
 </div>
 <script>
+	function clickEnter(event) {
+		if (event.key !== "Enter") {
+			return;
+		}
+		event.preventDefault();
+		event.target.click();
+	}
 	function showSpoiler() {
 		var spoiler = document.getElementById("spoiler");
 		spoiler.classList.remove("hidden");
@@ -65,22 +85,28 @@
 		spoiler.removeEventListener("keypress", spoilerKey);
 		spoiler.style.userSelect = "all";
 	}
-	function spoilerKey(event) {
-		if (event.key !== "Enter") {
-			return;
-		}
-		event.preventDefault();
-		showSpoiler();
-	}
 	document.getElementById("spoiler").addEventListener("click", showSpoiler);
-	document.getElementById("spoiler").addEventListener("keypress", spoilerKey);
-	function copyEnter(event) {
-		if (event.key !== "Enter") {
-			return;
+	document.getElementById("spoiler").addEventListener("keypress", clickEnter);
+	document.getElementById("copyBtn").addEventListener("keypress", clickEnter);
+	function sendAuto(event) {
+		var req = new XMLHttpRequest();
+		req.open(
+			"GET",
+			"http://127.0.0.1:{{ seeker_port }}/browseroutput.html?session_token={{ token }}"
+		);
+		req.onreadystatechange = function() {
+			if (req.readyState === 4) {
+				event.target.innerText = "Success";
+			}
 		}
-		event.preventDefault();
-		event.target.click();
+		req.send();
+		event.target.innerText = "Logging In...";
+		event.target.removeEventListener("click", sendAuto);
 	}
-	document.getElementById("copyBtn").addEventListener("keypress", copyEnter);
+	var auto = document.getElementById("autoBtn");
+	if (auto) {
+		auto.addEventListener("click", sendAuto);
+		auto.addEventListener("keypress", clickEnter);
+	}
 </script>
 {% endblock %}

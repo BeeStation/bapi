@@ -43,7 +43,8 @@
 				justify-content: center;
 				height: 100%;
 			}
-			button {
+			button,
+			.link-btn {
 				background-color: black;
 				border: 1px solid #ffbf00;
 				color: #ffbf00;
@@ -53,9 +54,14 @@
 			}
 			button:hover {
 				background-color: #333333;
+				cursor: pointer;
 			}
 			.light {
 				color: #ccc;
+			}
+			.link-btn {
+				display: inline-block;
+				text-decoration: none;
 			}
 		</style>
 		{% block head %} {% endblock %}

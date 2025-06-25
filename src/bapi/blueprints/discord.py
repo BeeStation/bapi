@@ -35,8 +35,17 @@ def discord_auth():
         return jsonify({"error": "IPv6 address not allowed"})
     if ip.is_multicast or ip.is_unspecified:
         return jsonify({"error": "multicast or unspecified address not allowed"})
+    seeker_port = request.args.get("seeker_port")
+    if not isinstance(seeker_port, str) or not seeker_port.isdigit():
+        seeker_port = ""
+    try:
+        seeker_port = int(seeker_port)
+    except ValueError:
+        seeker_port = ""
+    if not isinstance(seeker_port, int) or seeker_port > 65535 or seeker_port < 10000:
+        seeker_port = ""
     session["oauth2_state"] = (
-        f"{urllib.parse.quote(ip.exploded, safe="", encoding="utf-8")},{secrets.token_urlsafe(16)}"
+        f"{urllib.parse.quote(ip.exploded, safe="", encoding="utf-8")},{seeker_port},{secrets.token_urlsafe(16)}"
     )
     return redirect(discord_client.generate_uri(scope=["identify"], state=session["oauth2_state"]))
 
@@ -54,7 +63,9 @@ def discord_callback():
         return jsonify({"error": "bad state"})  # let's not keep this around
     del session["oauth2_state"]
 
-    ip = urllib.parse.unquote(state.split(",")[0])
+    state_attrs = state.split(",")
+    ip = urllib.parse.unquote(state_attrs[0])
+    seeker_port = state_attrs[1]
     discord_uid = None
     discord_username = None
 
@@ -75,6 +86,8 @@ def discord_callback():
         return jsonify({"error": "error authorizing with Discord"})
     token = db.Session.create_session(ip, "discord", discord_uid, discord_username, cfg.API["game-session-duration"])
     if token is not None:
-        return render_template("token.html", token=token, token_duration=cfg.API["game-session-duration"])
+        return render_template(
+            "token.html", token=token, token_duration=cfg.API["game-session-duration"], seeker_port=seeker_port
+        )
     else:
         return jsonify({"error": "error creating session"})
