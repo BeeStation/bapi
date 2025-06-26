@@ -21,27 +21,36 @@
 <div class="center-vertical">
 	<section>
 		<h2>BeeStation Auth Token</h2>
-		<p>This token expires in {{ token_duration }} days.</p>
 		{%if seeker_port %}
 		<div>
-			<div style="width: 100%; display: flex; justify-content: center">
-				<button
-					id="autoBtn"
-					tabindex="2"
-					style="font-size: larger;"
-				>
-					Log In Automatically
-				</a>
+			<div
+				style="
+					width: 100%;
+					display: flex;
+					padding: 10px 6px;
+					flex-direction: column;
+					align-items: center;
+					background-color: #222;
+					box-shadow: 0 0 4px 4px #100f0e;
+				"
+			>
+				<p>Your client has been automatically logged in.</p>
+				<p>
+					If automatic login fails, copy this token and paste it into
+					the game's login prompt.
+				</p>
+				<div>
+					<strong>Status: </strong
+					><span id="autoStatus" style="color: red">Not Sent</span>
+				</div>
 			</div>
 		</div>
 		{% endif %}
 		<p>
-			If automatic login fails, copy this token and paste it into the game's login prompt.
-		</p>
-		<p>
 			<strong>Do not share this token</strong>
 			with anyone else.
 		</p>
+		<p>Expiration: {{ token_duration }} days</p>
 		<div>
 			<span class="light">Click spoiler to show token</span>
 			<br />
@@ -88,25 +97,22 @@
 	document.getElementById("spoiler").addEventListener("click", showSpoiler);
 	document.getElementById("spoiler").addEventListener("keypress", clickEnter);
 	document.getElementById("copyBtn").addEventListener("keypress", clickEnter);
-	function sendAuto(event) {
+	function sendAuto() {
 		var req = new XMLHttpRequest();
 		req.open(
 			"GET",
 			"http://127.0.0.1:{{ seeker_port }}/browseroutput.html?session_token={{ token }}"
 		);
-		req.onreadystatechange = function() {
+		req.onreadystatechange = function () {
 			if (req.readyState === 4) {
-				event.target.innerText = "Success";
+				document.getElementById("autoStatus").innerText = "Success";
+				document.getElementById("autoStatus").style.color = "green";
 			}
-		}
+		};
 		req.send();
-		event.target.innerText = "Logging In...";
-		event.target.removeEventListener("click", sendAuto);
+		document.getElementById("autoStatus").innerText = "Sending...";
+		document.getElementById("autoStatus").style.color = "yellow";
 	}
-	var auto = document.getElementById("autoBtn");
-	if (auto) {
-		auto.addEventListener("click", sendAuto);
-		auto.addEventListener("keypress", clickEnter);
-	}
+	document.addEventListener("DOMContentLoaded", sendAuto);
 </script>
 {% endblock %}
