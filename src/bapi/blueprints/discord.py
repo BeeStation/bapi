@@ -41,7 +41,7 @@ def discord_auth():
         seeker_port = int(seeker_port)
     except ValueError:
         seeker_port = ""
-    if not isinstance(seeker_port, int) or seeker_port > 65535 or seeker_port < 10000:
+    if not isinstance(seeker_port, int) or seeker_port > 65535 or seeker_port < 1023:
         seeker_port = ""
     session["oauth2_state"] = (
         f"{urllib.parse.quote(ip.exploded, safe="", encoding="utf-8")},{seeker_port},{secrets.token_urlsafe(16)}"
