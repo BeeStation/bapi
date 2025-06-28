@@ -14,7 +14,7 @@ from marshmallow import fields
 from marshmallow import Schema
 
 
-class PatreonOuathResource(MethodResource):
+class PatreonOAuthResource(MethodResource):
     @doc(description="Patreon oauth callback.")
     def get(self):
         code = request.args.get("code")

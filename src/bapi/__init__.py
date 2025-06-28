@@ -1,3 +1,4 @@
+import secrets
 from os import environ
 
 from apispec import APISpec
@@ -17,6 +18,9 @@ from webargs.flaskparser import parser
 parser.location = "query"
 
 app = Flask(__name__)
+
+# Setup the ability to store session data (this is solely used for OAuth states)
+app.secret_key = secrets.token_urlsafe(32)
 
 if environ.get("DEBUG") == "True":
     from werkzeug.debug import DebuggedApplication
@@ -76,6 +80,13 @@ app.config["SQLALCHEMY_BINDS"] = {
         port=cfg.PRIVATE["database"]["game"]["port"],
         db=cfg.PRIVATE["database"]["game"]["db"],
     ),
+    "session": "mysql://{username}:{password}@{host}:{port}/{db}".format(
+        username=cfg.PRIVATE["database"]["session"]["user"],
+        password=cfg.PRIVATE["database"]["session"]["pass"],
+        host=cfg.PRIVATE["database"]["session"]["host"],
+        port=cfg.PRIVATE["database"]["session"]["port"],
+        db=cfg.PRIVATE["database"]["session"]["db"],
+    ),
     "site": "mysql://{username}:{password}@{host}:{port}/{db}".format(
         username=cfg.PRIVATE["database"]["site"]["user"],
         password=cfg.PRIVATE["database"]["site"]["pass"],
@@ -100,6 +111,7 @@ def handle_request_parsing_error(err, req, schema, *, error_status_code, error_h
 
 
 from bapi.resources.bans import BanListResource
+from bapi.blueprints.discord import discord_blueprint
 from bapi.resources.general import PlayerListResource
 from bapi.resources.general import ServerListResource
 from bapi.resources.general import ServerPlayerListResource
@@ -108,7 +120,7 @@ from bapi.resources.library import BookListResource
 from bapi.resources.library import BookResource
 from bapi.resources.patreon import BudgetResource
 from bapi.resources.patreon import LinkedPatreonListResource
-from bapi.resources.patreon import PatreonOuathResource
+from bapi.resources.patreon import PatreonOAuthResource
 from bapi.resources.stats import ServerStatsResource
 from bapi.resources.stats import StatsResource
 from bapi.resources.stats import StatsTotalsResource
@@ -133,10 +145,10 @@ docs_ext.register(BookListResource)
 docs_ext.register(BookResource)
 
 
-api.add_resource(PatreonOuathResource, "/patreonauth")
+api.add_resource(PatreonOAuthResource, "/patreonauth")
 api.add_resource(LinkedPatreonListResource, "/linked_patreons")
 api.add_resource(BudgetResource, "/budget")
-docs_ext.register(PatreonOuathResource)
+docs_ext.register(PatreonOAuthResource)
 docs_ext.register(LinkedPatreonListResource)
 docs_ext.register(BudgetResource)
 
@@ -150,6 +162,9 @@ docs_ext.register(StatsTotalsResource)
 
 # Register the swagger docs blueprint
 app.register_blueprint(get_swaggerui_blueprint("/docs", "/docs_json", config={"app_name": "BeeStation API"}))
+
+# Register Discord blueprint
+app.register_blueprint(discord_blueprint)
 
 
 @app.route("/")

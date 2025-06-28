@@ -1,0 +1,120 @@
+{% extends 'base.html' %} {% block title %}BeeStation Auth Token{% endblock %}
+{% block content %}
+<style>
+	.spoiler.hidden {
+		color: transparent;
+		user-select: none;
+	}
+	.spoiler {
+		text-align: left;
+		color: white;
+		background-color: black;
+		border-radius: 10px;
+		padding: 5px 4px;
+		word-break: break-all;
+	}
+	.spoiler.hidden:hover {
+		cursor: pointer;
+		background-color: #222;
+	}
+</style>
+<div class="center-vertical">
+	<section>
+		<h2>BeeStation Auth Token</h2>
+		{%if seeker_port %}
+		<div>
+			<div
+				style="
+					width: 100%;
+					display: flex;
+					padding: 10px 6px;
+					flex-direction: column;
+					align-items: center;
+					background-color: #222;
+					box-shadow: 0 0 4px 4px #100f0e;
+				"
+			>
+				<p>Your client has been automatically logged in.</p>
+				<p>
+					If automatic login fails, copy this token and paste it into
+					the game's login prompt.
+				</p>
+				<div>
+					<strong>Status: </strong
+					><span id="autoStatus" style="color: red">Not Sent</span>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+		<p>
+			<strong>Do not share this token</strong>
+			with anyone else.
+		</p>
+		<p>Expiration: {{ token_duration }} days</p>
+		<div>
+			<span class="light">Click spoiler to show token</span>
+			<br />
+			<div style="display: flex; flex-direction: row; margin-top: 4px">
+				<div
+					id="spoiler"
+					class="spoiler hidden"
+					style="margin-right: 4px; flex-grow: 1"
+					tabindex="0"
+				>
+					<strong id="myToken">{{ token }}</strong>
+				</div>
+				<button
+					id="copyBtn"
+					style="
+						font-size: large;
+						padding-left: 16px;
+						padding-right: 16px;
+					"
+					onclick="navigator.clipboard.writeText('{{ token }}');"
+					tabindex="1"
+				>
+					Copy
+				</button>
+			</div>
+		</div>
+	</section>
+</div>
+<script>
+	function clickEnter(event) {
+		if (event.key !== "Enter") {
+			return;
+		}
+		event.preventDefault();
+		event.target.click();
+	}
+	function showSpoiler() {
+		var spoiler = document.getElementById("spoiler");
+		spoiler.classList.remove("hidden");
+		spoiler.removeEventListener("click", showSpoiler);
+		spoiler.removeEventListener("keypress", spoilerKey);
+		spoiler.style.userSelect = "all";
+	}
+	document.getElementById("spoiler").addEventListener("click", showSpoiler);
+	document.getElementById("spoiler").addEventListener("keypress", clickEnter);
+	document.getElementById("copyBtn").addEventListener("keypress", clickEnter);
+	function sendAuto() {
+		var req = new XMLHttpRequest();
+		req.open(
+			"GET",
+			"http://127.0.0.1:{{ seeker_port }}/browseroutput.html?session_token={{ token }}"
+		);
+		req.onreadystatechange = function () {
+			if (req.readyState === 4) {
+				document.getElementById("autoStatus").innerText = "Success";
+				document.getElementById("autoStatus").style.color = "green";
+			}
+		};
+		req.send();
+		document.getElementById("autoStatus").innerText = "Sending...";
+		document.getElementById("autoStatus").style.color = "yellow";
+	}
+	if ("{{ seeker_port }}".length > 0) {
+		document.addEventListener("DOMContentLoaded", sendAuto);
+	}
+</script>
+{% endblock %}

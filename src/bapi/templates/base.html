@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{% block title %}{% endblock %}</title>
+		<style>
+			html {
+				background-color: #333333;
+				color: #ffffff;
+				font-family: Helvetica, Arial, sans-serif;
+				overflow-x: hidden;
+			}
+			html,
+			body,
+			main {
+				height: 100%;
+				width: 100%;
+				margin: 0;
+				padding: 0;
+			}
+			h1,
+			h2,
+			h3 {
+				color: #ffbf00;
+				font-weight: bold;
+				text-align: center;
+				font-size: 30px;
+			}
+			main {
+				max-width: 50rem;
+				margin: 0 auto;
+			}
+			section {
+				padding: 30px;
+				background-color: #1a1a1a;
+				box-shadow: 0 0 4px 4px #100f0e;
+				font-size: 20px;
+			}
+			.center-vertical {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				height: 100%;
+			}
+			button,
+			.link-btn {
+				background-color: black;
+				border: 1px solid #ffbf00;
+				color: #ffbf00;
+				transition: background-color 0.1s linear;
+				padding: 5px 4px;
+				border-radius: 4px;
+			}
+			button:hover {
+				background-color: #333333;
+				cursor: pointer;
+			}
+			.light {
+				color: #ccc;
+			}
+			.link-btn {
+				display: inline-block;
+				text-decoration: none;
+			}
+		</style>
+		{% block head %} {% endblock %}
+	</head>
+	<body>
+		<main class="content">{% block content %}{% endblock %}</main>
+	</body>
+</html>
