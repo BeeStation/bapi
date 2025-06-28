@@ -71,7 +71,7 @@
 						padding-right: 16px;
 					"
 					onclick="navigator.clipboard.writeText('{{ token }}');"
-					taxindex="1"
+					tabindex="1"
 				>
 					Copy
 				</button>
@@ -113,6 +113,8 @@
 		document.getElementById("autoStatus").innerText = "Sending...";
 		document.getElementById("autoStatus").style.color = "yellow";
 	}
-	document.addEventListener("DOMContentLoaded", sendAuto);
+	if ("{{ seeker_port }}".length > 0) {
+		document.addEventListener("DOMContentLoaded", sendAuto);
+	}
 </script>
 {% endblock %}
