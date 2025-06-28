@@ -5,7 +5,6 @@ import urllib.parse
 import discordoauth2
 from bapi import cfg
 from bapi import db
-from discordoauth2.exceptions import Exceptions
 from flask import Blueprint
 from flask import jsonify
 from flask import redirect
@@ -78,9 +77,9 @@ def discord_callback():
         # Handle non-unique usernames
         if discriminator != "0":
             discord_username = f"{discord_username}#{discriminator}"
-    except Exceptions.RateLimited:
+    except discordoauth2.exceptions.RateLimited:
         return jsonify({"error": "too many requests"}), 429
-    except KeyError | Exceptions.HTTPException | Exceptions.Forbidden:
+    except KeyError | discordoauth2.exceptions.HTTPException | discordoauth2.exceptions.Forbidden:
         return jsonify({"error": "error authorizing with Discord"})
     if discord_uid is None or discord_username is None:
         return jsonify({"error": "error authorizing with Discord"})

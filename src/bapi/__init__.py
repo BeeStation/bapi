@@ -80,6 +80,13 @@ app.config["SQLALCHEMY_BINDS"] = {
         port=cfg.PRIVATE["database"]["game"]["port"],
         db=cfg.PRIVATE["database"]["game"]["db"],
     ),
+    "session": "mysql://{username}:{password}@{host}:{port}/{db}".format(
+        username=cfg.PRIVATE["database"]["session"]["user"],
+        password=cfg.PRIVATE["database"]["session"]["pass"],
+        host=cfg.PRIVATE["database"]["session"]["host"],
+        port=cfg.PRIVATE["database"]["session"]["port"],
+        db=cfg.PRIVATE["database"]["session"]["db"],
+    ),
     "site": "mysql://{username}:{password}@{host}:{port}/{db}".format(
         username=cfg.PRIVATE["database"]["site"]["user"],
         password=cfg.PRIVATE["database"]["site"]["pass"],

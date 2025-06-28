@@ -22,7 +22,7 @@ db_session = sqlalchemy_ext.session
 
 
 class Session(sqlalchemy_ext.Model):
-    __bind_key__ = "game"
+    __bind_key__ = "session"
     __tablename__ = "SS13_session"
 
     id = Column("id", Integer(), primary_key=True)
