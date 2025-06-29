@@ -18,7 +18,7 @@ class VersionResource(MethodView):
 
 @blp.route("/playerlist")
 class PlayerListResource(MethodView):
-    @blp.arguments(APIPasswordRequiredSchema, location="json")
+    @blp.arguments(APIPasswordRequiredSchema, location="query")
     @blp.doc(description="Get a list of currently playing CKEYs on all servers.")
     def get(self, api_pass):
         if api_pass == cfg.PRIVATE["api_passwd"]:
@@ -42,7 +42,7 @@ class PlayerListResource(MethodView):
 
 @blp.route("/playerlist/<string:id>")
 class ServerPlayerListResource(MethodView):
-    @blp.arguments(APIPasswordRequiredSchema, location="json")
+    @blp.arguments(APIPasswordRequiredSchema, location="query")
     @blp.doc(description="Get a list of currently playing CKEYs on a specific server.")
     def get(self, id, api_pass):
         if api_pass == cfg.PRIVATE["api_passwd"]:

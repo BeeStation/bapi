@@ -50,7 +50,7 @@ class PatreonOAuthResource(MethodView):
 @blp.route("/linked_patreons")
 class LinkedPatreonListResource(MethodView):
     @blp.response(200, PatreonLinkSchema(many=True))
-    @blp.arguments(APIPasswordRequiredSchema, location="json")
+    @blp.arguments(APIPasswordRequiredSchema, location="query")
     @blp.doc(description="Get a list of linked ckey-Patreon accounts.")
     def get(self, args):
         if args["api_pass"] == cfg.PRIVATE["api_passwd"]:
