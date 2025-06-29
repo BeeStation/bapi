@@ -3,6 +3,7 @@
 
 cert/*
 venv
+.venv
 
 *.swp
 *.pyc

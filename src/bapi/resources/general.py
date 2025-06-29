@@ -3,20 +3,23 @@ from bapi import util
 from bapi.schemas import APIPasswordRequiredSchema
 from flask import abort
 from flask import jsonify
-from flask_apispec import doc
-from flask_apispec import MethodResource
-from flask_apispec import use_kwargs
+from flask.views import MethodView
+from flask_smorest import Blueprint
+
+blp = Blueprint("general", "general")
 
 
-class VersionResource(MethodResource):
-    @doc(description="Get the current version of the API.")
+@blp.route("/version")
+class VersionResource(MethodView):
+    @blp.doc(description="Get the current version of the API.")
     def get(self):
         return cfg.VERSION
 
 
-class PlayerListResource(MethodResource):
-    @use_kwargs(APIPasswordRequiredSchema)
-    @doc(description="Get a list of currently playing CKEYs on all servers.")
+@blp.route("/playerlist")
+class PlayerListResource(MethodView):
+    @blp.arguments(APIPasswordRequiredSchema, location="json")
+    @blp.doc(description="Get a list of currently playing CKEYs on all servers.")
     def get(self, api_pass):
         if api_pass == cfg.PRIVATE["api_passwd"]:
             try:
@@ -37,9 +40,10 @@ class PlayerListResource(MethodResource):
             return jsonify({"error": "bad pass"})
 
 
-class ServerPlayerListResource(MethodResource):
-    @use_kwargs(APIPasswordRequiredSchema)
-    @doc(description="Get a list of currently playing CKEYs on a specific server.")
+@blp.route("/playerlist/<string:id>")
+class ServerPlayerListResource(MethodView):
+    @blp.arguments(APIPasswordRequiredSchema, location="json")
+    @blp.doc(description="Get a list of currently playing CKEYs on a specific server.")
     def get(self, id, api_pass):
         if api_pass == cfg.PRIVATE["api_passwd"]:
             if not util.get_server(id):
@@ -53,7 +57,8 @@ class ServerPlayerListResource(MethodResource):
             return jsonify({"error": "bad pass"})
 
 
-class ServerListResource(MethodResource):
-    @doc(description="Get a list of the manifest details of all servers.")
+@blp.route("/servers")
+class ServerListResource(MethodView):
+    @blp.doc(description="Get a list of the manifest details of all servers.")
     def get(self):
         return jsonify(cfg.SERVERS)
