@@ -22,7 +22,7 @@ class StatsResource(MethodView):
                     try:
                         d[server["id"]] = util.fetch_server_status(server["id"])
                     except Exception as e:
-                        current_app.logger.error(f"error while fetching server stats for {server["id"]}: {e}")
+                        current_app.logger.error(f"error while fetching server stats for {server['id']}: {e}")
                         d[server["id"]] = {"error": "could not retrieve server stats"}
 
             return jsonify(d)
