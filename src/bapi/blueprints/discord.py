@@ -7,6 +7,7 @@ from bapi import db
 from discordoauth2 import Client as DiscordClient
 from discordoauth2.exceptions import Exceptions
 from flask import Blueprint
+from flask import current_app
 from flask import jsonify
 from flask import redirect
 from flask import render_template
@@ -90,7 +91,7 @@ def discord_callback():
     except Exceptions.HTTPException as e:
         if f"{e}".startswith("the code"):  # provide a more useful message to the user
             return jsonify({"error": "error authorizing with Discord (invalid/expired OAuth code)"}), 400
-        app.logger.error(f"HTTPException occurred during Discord authorization: {e}")
+        current_app.logger.error(f"HTTPException occurred during Discord authorization: {e}")
         return jsonify({"error": "error authorizing with Discord"}), 500
     except KeyError:
         return jsonify({"error": "error authorizing with Discord (no data)"}), 400
