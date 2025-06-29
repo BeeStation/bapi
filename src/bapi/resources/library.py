@@ -4,7 +4,6 @@ from bapi import cfg
 from bapi import db
 from bapi.schemas import PaginationQuerySchema
 from bapi.schemas import PaginationResultSchema
-from flask import abort
 from flask import jsonify
 from flask.views import MethodView
 from flask_smorest import Blueprint
@@ -42,5 +41,5 @@ class BookResource(MethodView):
     def get(self, bookid):
         book = db.Book.from_id(bookid)
         if not book:
-            abort(404, {"error": "book not found"})
+            return jsonify({"error": "book not found"}), 404
         return book

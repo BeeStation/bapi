@@ -25,15 +25,15 @@ discord_client = discordoauth2.Client(
 def discord_auth():
     ip = request.args.get("ip")
     if not isinstance(ip, str):
-        return jsonify({"error": "provided IP address invalid"})
+        return jsonify({"error": "provided IP address invalid"}), 400
     try:
         ip = ipaddress.ip_address(ip)
     except ValueError:
-        return jsonify({"error": "provided IP address invalid"})
+        return jsonify({"error": "provided IP address invalid"}), 400
     if ip.version == 6:
-        return jsonify({"error": "IPv6 address not allowed"})
+        return jsonify({"error": "IPv6 address not allowed"}), 400
     if ip.is_multicast or ip.is_unspecified:
-        return jsonify({"error": "multicast or unspecified address not allowed"})
+        return jsonify({"error": "multicast or unspecified address not allowed"}), 400
     seeker_port = request.args.get("seeker_port")
     if not isinstance(seeker_port, str) or not seeker_port.isdigit():
         seeker_port = ""
@@ -55,11 +55,11 @@ def discord_callback():
     state = request.args.get("state")
 
     if code is None:
-        return jsonify({"error": "bad oauth code"})
+        return jsonify({"error": "bad oauth code"}), 400
 
     state_session = session.get("oauth2_state")
     if state is None or state_session is None or state != state_session:
-        return jsonify({"error": "bad state"})  # let's not keep this around
+        return jsonify({"error": "bad state"}), 400  # let's not keep this around
     del session["oauth2_state"]
 
     state_attrs = state.split(",")
@@ -89,4 +89,4 @@ def discord_callback():
             "token.html", token=token, token_duration=cfg.API["game-session-duration"], seeker_port=seeker_port
         )
     else:
-        return jsonify({"error": "error creating session"})
+        return jsonify({"error": "error creating session"}), 500

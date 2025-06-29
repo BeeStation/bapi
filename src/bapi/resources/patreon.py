@@ -5,6 +5,7 @@ from bapi import util
 from bapi.schemas import APIPasswordRequiredSchema
 from bapi.schemas import BudgetSchema
 from bapi.schemas import PatreonLinkSchema
+from flask import current_app
 from flask import jsonify
 from flask import redirect
 from flask import request
@@ -53,14 +54,15 @@ class LinkedPatreonListResource(MethodView):
     @blp.arguments(APIPasswordRequiredSchema, location="query")
     @blp.doc(description="Get a list of linked ckey-Patreon accounts.")
     def get(self, args):
-        if args["api_pass"] == cfg.PRIVATE["api_passwd"]:
+        if args.get("api_pass") == cfg.PRIVATE["api_passwd"]:
             try:
                 links = db.db_session.query(db.Patreon).all()
                 return jsonify([{"ckey": link.ckey, "patreon_id": link.patreon_id} for link in links])
-            except Exception as E:
-                return jsonify({"error": str(E)})
+            except Exception as e:
+                current_app.logger.error(f"database error while fetching linked Patrons: {e}")
+                return jsonify({"error": "database error"}), 500
         else:
-            return jsonify({"error": "bad pass"})
+            return jsonify({"error": "bad pass"}), 401
 
 
 @blp.route("/budget")
