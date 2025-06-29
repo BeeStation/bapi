@@ -81,7 +81,8 @@ def discord_callback():
             discord_username = f"{discord_username}#{discriminator}"
     except Exceptions.RateLimited as e:
         return jsonify({"error": "too many requests", "retry_after": e.retry_after}), 429
-    except Exceptions.Forbidden:
+    except Exceptions.Forbidden as e:
+        current_app.logger.error(f"Forbidden exception during Discord authorization: {e}")
         return (
             jsonify(
                 {"error": "error authorizing with Discord (invalid OAuth scopes, this is a server configuration error)"}
