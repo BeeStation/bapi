@@ -90,7 +90,8 @@ def discord_callback():
     except Exceptions.HTTPException as e:
         if f"{e}".startswith("the code"):  # provide a more useful message to the user
             return jsonify({"error": "error authorizing with Discord (invalid/expired OAuth code)"}), 400
-        return jsonify({"error": f"error authorizing with Discord ({e})"}), 500
+        app.logger.error(f"HTTPException occurred during Discord authorization: {e}")
+        return jsonify({"error": "error authorizing with Discord"}), 500
     except KeyError:
         return jsonify({"error": "error authorizing with Discord (no data)"}), 400
     if discord_uid is None or discord_username is None:
