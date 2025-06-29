@@ -2,10 +2,12 @@ import ipaddress
 import secrets
 import urllib.parse
 
-import discordoauth2
 from bapi import cfg
 from bapi import db
+from discordoauth2 import Client as DiscordClient
+from discordoauth2.exceptions import Exceptions
 from flask import Blueprint
+from flask import current_app
 from flask import jsonify
 from flask import redirect
 from flask import render_template
@@ -14,7 +16,7 @@ from flask import session
 
 discord_blueprint = Blueprint("discord", __name__, template_folder="templates", url_prefix="/discord")
 
-discord_client = discordoauth2.Client(
+discord_client = DiscordClient(
     cfg.PRIVATE["discord"]["client_id"],
     secret=cfg.PRIVATE["discord"]["client_secret"],
     redirect=f"{cfg.API['api-url']}/discord/callback",
@@ -77,16 +79,30 @@ def discord_callback():
         # Handle non-unique usernames
         if discriminator != "0":
             discord_username = f"{discord_username}#{discriminator}"
-    except discordoauth2.exceptions.RateLimited:
-        return jsonify({"error": "too many requests"}), 429
-    except KeyError | discordoauth2.exceptions.HTTPException | discordoauth2.exceptions.Forbidden:
-        return jsonify({"error": "error authorizing with Discord"})
-    if discord_uid is None or discord_username is None:
-        return jsonify({"error": "error authorizing with Discord"})
-    token = db.Session.create_session(ip, "discord", discord_uid, discord_username, cfg.API["game-session-duration"])
-    if token is not None:
-        return render_template(
-            "token.html", token=token, token_duration=cfg.API["game-session-duration"], seeker_port=seeker_port
+    except Exceptions.RateLimited as e:
+        return jsonify({"error": "too many requests", "retry_after": e.retry_after}), 429
+    except Exceptions.Forbidden as e:
+        current_app.logger.error(f"Forbidden exception during Discord authorization: {e}")
+        return (
+            jsonify(
+                {"error": "error authorizing with Discord (invalid OAuth scopes, this is a server configuration error)"}
+            ),
+            500,
         )
+    except Exceptions.HTTPException as e:
+        if f"{e}".startswith("the code"):  # provide a more useful message to the user
+            return jsonify({"error": "error authorizing with Discord (invalid/expired OAuth code)"}), 400
+        current_app.logger.error(f"HTTPException occurred during Discord authorization: {e}")
+        return jsonify({"error": "error authorizing with Discord"}), 500
+    except KeyError:
+        return jsonify({"error": "error authorizing with Discord (no data)"}), 400
+    if discord_uid is None or discord_username is None:
+        return jsonify({"error": "error authorizing with Discord (no data)"}), 400
+    session_duration = cfg.API.get("game-session-duration")
+    if session_duration is None:
+        session_duration = 90
+    token = db.Session.create_session(ip, "discord", discord_uid, discord_username, session_duration)
+    if token is not None:
+        return render_template("token.html", token=token, token_duration=session_duration, seeker_port=seeker_port)
     else:
         return jsonify({"error": "error creating session"})
