@@ -31,7 +31,7 @@ class PlayerListResource(MethodView):
                             d[server["id"]] = util.fetch_server_players(server["id"])
                         except Exception as e:
                             current_app.logger.error(f"error while fetching server players for {server['id']}: {e}")
-                            d[server["id"]] = {{"error": "could not retrieve server players"}}
+                            d[server["id"]] = {"error": "could not retrieve server players"}
 
                 return jsonify(d)
 
