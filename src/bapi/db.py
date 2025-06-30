@@ -15,6 +15,7 @@ from sqlalchemy import Integer
 from sqlalchemy import SmallInteger
 from sqlalchemy import String
 from sqlalchemy import Text
+from sqlalchemy.orm import column_property
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql.expression import text
 
@@ -53,6 +54,38 @@ class Session(sqlalchemy_ext.Model):
         db_session.add(entry)
         db_session.commit()
         return random_token
+
+
+class SessionCreationNonce(sqlalchemy_ext.Model):
+    __bind_key__ = "session"
+    __tablename__ = "SS13_session_creation_nonce"
+
+    created = Column("created", DateTime())
+    id = Column("id", Integer(), primary_key=True)
+    ip = Column("ip", String(32))
+    session_nonce = Column("session_nonce", String(64))
+    seeker_port = Column("seeker_port", Integer())
+    seconds_since_creation = column_property(func.timestampdiff(text("SECOND"), created, func.now()))
+
+    @classmethod
+    def is_valid_session_creation(cls, ip, seeker_port, nonce, valid_duration):
+        valid_nonce = None
+        try:
+            valid_nonce = (
+                db_session.query(cls)
+                .filter(and_(cls.session_nonce == nonce, cls.ip == ip, cls.seeker_port == seeker_port))
+                .one()
+            )
+        except NoResultFound:
+            return (False, "invalid")
+        if valid_nonce is None:
+            return (False, "invalid")
+        else:
+            db_session.delete(valid_nonce)
+            print(valid_nonce.seconds_since_creation)
+            if valid_nonce.seconds_since_creation > (valid_duration or 240):
+                return (False, "expired")
+            return (True, "")
 
 
 class Player(sqlalchemy_ext.Model):
