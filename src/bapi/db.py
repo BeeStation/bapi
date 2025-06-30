@@ -82,7 +82,6 @@ class SessionCreationNonce(sqlalchemy_ext.Model):
             return (False, "invalid")
         else:
             db_session.delete(valid_nonce)
-            print(valid_nonce.seconds_since_creation)
             if valid_nonce.seconds_since_creation > (valid_duration or 240):
                 return (False, "expired")
             return (True, "")
