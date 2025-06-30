@@ -65,7 +65,7 @@ class SessionCreationNonce(sqlalchemy_ext.Model):
     ip = Column("ip", String(32))
     session_nonce = Column("session_nonce", String(64))
     seeker_port = Column("seeker_port", Integer())
-    seconds_since_creation = column_property(func.second(func.timediff(func.now(), created)))
+    seconds_since_creation = column_property(func.timestampdiff(text("SECOND"), created, func.now()))
 
     @classmethod
     def is_valid_session_creation(cls, ip, seeker_port, nonce, valid_duration):
@@ -82,6 +82,7 @@ class SessionCreationNonce(sqlalchemy_ext.Model):
             return (False, "invalid")
         else:
             db_session.delete(valid_nonce)
+            print(valid_nonce.seconds_since_creation)
             if valid_nonce.seconds_since_creation > (valid_duration or 240):
                 return (False, "expired")
             return (True, "")

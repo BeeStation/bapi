@@ -76,7 +76,10 @@ def discord_callback():
     if len(state_attrs) != 4:
         return jsonify({"error": "bad state"}), 400
     ip = urllib.parse.unquote(state_attrs[0])
-    seeker_port = state_attrs[1]
+    try:
+        seeker_port = int(state_attrs[1])
+    except ValueError:
+        return jsonify({"error": "bad state"}), 400
     nonce = state_attrs[2]
     if not isinstance(nonce, str) or len(nonce) != 64 or not re.match("^[a-z0-9]+$", nonce):
         return jsonify({"error": "bad state"}), 400
