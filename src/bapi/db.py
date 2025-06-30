@@ -2,9 +2,9 @@ import socket
 import struct
 from hashlib import sha256
 
-from bapi import ma_ext
 from bapi import sqlalchemy_ext
 from bapi.util import generate_random_session_token
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from sqlalchemy import and_
 from sqlalchemy import Column
 from sqlalchemy import Date
@@ -231,7 +231,7 @@ class Book(sqlalchemy_ext.Model):
             return None
 
 
-class BookSchema(ma_ext.SQLAlchemyAutoSchema):
+class BookSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Book
 

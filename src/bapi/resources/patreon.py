@@ -3,19 +3,22 @@ from bapi import cfg
 from bapi import db
 from bapi import util
 from bapi.schemas import APIPasswordRequiredSchema
+from bapi.schemas import BudgetSchema
+from bapi.schemas import PatreonLinkSchema
+from flask import current_app
 from flask import jsonify
 from flask import redirect
 from flask import request
-from flask_apispec import doc
-from flask_apispec import marshal_with
-from flask_apispec import MethodResource
-from flask_apispec import use_kwargs
-from marshmallow import fields
-from marshmallow import Schema
+from flask.views import MethodView
+from flask_smorest import Blueprint
 
 
-class PatreonOAuthResource(MethodResource):
-    @doc(description="Patreon oauth callback.")
+blp = Blueprint("patreon", "patreon", url_prefix="/")
+
+
+@blp.route("/patreonauth")
+class PatreonOAuthResource(MethodView):
+    @blp.doc(description="Patreon oauth callback.")
     def get(self):
         code = request.args.get("code")
         ckey = request.args.get("state")
@@ -45,35 +48,27 @@ class PatreonOAuthResource(MethodResource):
             return redirect(f"{cfg.API['website-url']}/linkpatreon?error=unknown")
 
 
-class PatreonLinkSchema(Schema):
-    ckey = fields.String()
-    patreon_id = fields.String()
-
-
-class LinkedPatreonListResource(MethodResource):
-    @marshal_with(PatreonLinkSchema(many=True))
-    @use_kwargs(APIPasswordRequiredSchema)
-    @doc(description="Get a list of linked ckey-Patreon accounts.")
-    def get(self, **kwargs):
-        if kwargs["api_pass"] == cfg.PRIVATE["api_passwd"]:
+@blp.route("/linked_patreons")
+class LinkedPatreonListResource(MethodView):
+    @blp.response(200, PatreonLinkSchema(many=True))
+    @blp.arguments(APIPasswordRequiredSchema, location="query")
+    @blp.doc(description="Get a list of linked ckey-Patreon accounts.")
+    def get(self, args):
+        if args.get("api_pass") == cfg.PRIVATE["api_passwd"]:
             try:
                 links = db.db_session.query(db.Patreon).all()
                 return jsonify([{"ckey": link.ckey, "patreon_id": link.patreon_id} for link in links])
-            except Exception as E:
-                return jsonify({"error": str(E)})
+            except Exception as e:
+                current_app.logger.error(f"database error while fetching linked Patrons: {e}")
+                return jsonify({"error": "database error"}), 500
         else:
-            return jsonify({"error": "bad pass"})
+            return jsonify({"error": "bad pass"}), 401
 
 
-class BudgetSchema(Schema):
-    income = fields.Integer()
-    goal = fields.Integer()
-    percent = fields.Integer()
-
-
-class BudgetResource(MethodResource):
-    @marshal_with(BudgetSchema)
-    @doc(description="Get Patreon donation goal information.")
+@blp.route("/budget")
+class BudgetResource(MethodView):
+    @blp.response(200, BudgetSchema)
+    @blp.doc(description="Get Patreon donation goal information.")
     def get(self):
         income = util.get_patreon_income()
 

@@ -1,24 +1,27 @@
 from bapi import cfg
 from bapi import util
 from bapi.schemas import APIPasswordRequiredSchema
-from flask import abort
+from flask import current_app
 from flask import jsonify
-from flask_apispec import doc
-from flask_apispec import MethodResource
-from flask_apispec import use_kwargs
+from flask.views import MethodView
+from flask_smorest import Blueprint
+
+blp = Blueprint("general", "general")
 
 
-class VersionResource(MethodResource):
-    @doc(description="Get the current version of the API.")
+@blp.route("/version")
+class VersionResource(MethodView):
+    @blp.doc(description="Get the current version of the API.")
     def get(self):
         return cfg.VERSION
 
 
-class PlayerListResource(MethodResource):
-    @use_kwargs(APIPasswordRequiredSchema)
-    @doc(description="Get a list of currently playing CKEYs on all servers.")
-    def get(self, api_pass):
-        if api_pass == cfg.PRIVATE["api_passwd"]:
+@blp.route("/playerlist")
+class PlayerListResource(MethodView):
+    @blp.arguments(APIPasswordRequiredSchema, location="query")
+    @blp.doc(description="Get a list of currently playing CKEYs on all servers.")
+    def get(self, args):
+        if args.get("api_pass") == cfg.PRIVATE["api_passwd"]:
             try:
                 d = {}
 
@@ -26,34 +29,39 @@ class PlayerListResource(MethodResource):
                     if server["open"]:
                         try:
                             d[server["id"]] = util.fetch_server_players(server["id"])
-                        except Exception as E:
-                            d[server["id"]] = {"error": str(E)}
+                        except Exception as e:
+                            current_app.logger.error(f"error while fetching server players for {server['id']}: {e}")
+                            d[server["id"]] = {"error": "could not retrieve server players"}
 
                 return jsonify(d)
 
-            except Exception as E:
-                return jsonify({"error": str(E)})
+            except Exception as e:
+                current_app.logger.error(f"error while fetching server players: {e}")
+                return jsonify({"error": "could not retrieve server players"}), 500
         else:
-            return jsonify({"error": "bad pass"})
+            return jsonify({"error": "bad pass"}), 401
 
 
-class ServerPlayerListResource(MethodResource):
-    @use_kwargs(APIPasswordRequiredSchema)
-    @doc(description="Get a list of currently playing CKEYs on a specific server.")
-    def get(self, id, api_pass):
-        if api_pass == cfg.PRIVATE["api_passwd"]:
+@blp.route("/playerlist/<string:id>")
+class ServerPlayerListResource(MethodView):
+    @blp.arguments(APIPasswordRequiredSchema, location="query")
+    @blp.doc(description="Get a list of currently playing CKEYs on a specific server.")
+    def get(self, args, id):
+        if args.get("api_pass") == cfg.PRIVATE["api_passwd"]:
             if not util.get_server(id):
-                return abort(404, {"error": "unknown server"})
+                return jsonify({"error": "unknown server"}), 404
 
             try:
                 return jsonify(util.fetch_server_players(id))
-            except Exception as E:
-                return jsonify({"error": str(E)})
+            except Exception as e:
+                current_app.logger.error(f"error while fetching server players for {id}: {e}")
+                return jsonify({"error": "could not retrieve server players"}), 500
         else:
-            return jsonify({"error": "bad pass"})
+            return jsonify({"error": "bad pass"}), 401
 
 
-class ServerListResource(MethodResource):
-    @doc(description="Get a list of the manifest details of all servers.")
+@blp.route("/servers")
+class ServerListResource(MethodView):
+    @blp.doc(description="Get a list of the manifest details of all servers.")
     def get(self):
         return jsonify(cfg.SERVERS)

@@ -1,21 +1,12 @@
 import secrets
 from os import environ
 
-from apispec import APISpec
-from apispec.ext.marshmallow import MarshmallowPlugin
 from bapi import cfg
-from flask import abort
 from flask import Flask
 from flask import redirect
-from flask_apispec import FlaskApiSpec
 from flask_cors import CORS
-from flask_marshmallow import Marshmallow
-from flask_restful import Api
+from flask_smorest import Api
 from flask_sqlalchemy import SQLAlchemy
-from flask_swagger_ui import get_swaggerui_blueprint
-from webargs.flaskparser import parser
-
-parser.location = "query"
 
 app = Flask(__name__)
 
@@ -57,15 +48,13 @@ if environ.get("APM") == "True":
 
     apm = ElasticAPM(app)
 
-
-app.config["APISPEC_SPEC"] = APISpec(
-    title="BeeStation API",
-    version="v2",
-    openapi_version="2.0",
-    plugins=[MarshmallowPlugin()],
-)
-
-app.config["APISPEC_SWAGGER_URL"] = "/docs_json"
+app.config["API_TITLE"] = "BeeStation API"
+app.config["API_VERSION"] = "v2"
+app.config["OPENAPI_VERSION"] = "3.1.1"
+app.config["OPENAPI_URL_PREFIX"] = ""
+app.config["OPENAPI_JSON_PATH"] = "/docs_json"
+app.config["OPENAPI_SWAGGER_UI_PATH"] = "/docs"
+app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.25.3/"
 
 app.url_map.strict_slashes = False
 
@@ -100,68 +89,19 @@ sqlalchemy_ext = SQLAlchemy(app)
 
 api = Api(app)
 
-ma_ext = Marshmallow(app)
-docs_ext = FlaskApiSpec(app)
 
-
-# This error handler is necessary for usage with Flask-RESTful
-@parser.error_handler
-def handle_request_parsing_error(err, req, schema, *, error_status_code, error_headers):
-    abort(400, err.messages)
-
-
-from bapi.resources.bans import BanListResource
+from bapi.resources.bans import blp as bans_blueprint
 from bapi.blueprints.discord import discord_blueprint
-from bapi.resources.general import PlayerListResource
-from bapi.resources.general import ServerListResource
-from bapi.resources.general import ServerPlayerListResource
-from bapi.resources.general import VersionResource
-from bapi.resources.library import BookListResource
-from bapi.resources.library import BookResource
-from bapi.resources.patreon import BudgetResource
-from bapi.resources.patreon import LinkedPatreonListResource
-from bapi.resources.patreon import PatreonOAuthResource
-from bapi.resources.stats import ServerStatsResource
-from bapi.resources.stats import StatsResource
-from bapi.resources.stats import StatsTotalsResource
+from bapi.resources.general import blp as general_blueprint
+from bapi.resources.library import blp as library_blueprint
+from bapi.resources.patreon import blp as patreon_blueprint
+from bapi.resources.stats import blp as stats_blueprint
 
-api.add_resource(BanListResource, "/bans")
-docs_ext.register(BanListResource)
-
-
-api.add_resource(VersionResource, "/version")
-api.add_resource(PlayerListResource, "/playerlist")
-api.add_resource(ServerPlayerListResource, "/playerlist/<string:id>")
-api.add_resource(ServerListResource, "/servers")
-docs_ext.register(VersionResource)
-docs_ext.register(PlayerListResource)
-docs_ext.register(ServerPlayerListResource)
-docs_ext.register(ServerListResource)
-
-
-api.add_resource(BookListResource, "/library")
-api.add_resource(BookResource, "/library/<int:bookid>")
-docs_ext.register(BookListResource)
-docs_ext.register(BookResource)
-
-
-api.add_resource(PatreonOAuthResource, "/patreonauth")
-api.add_resource(LinkedPatreonListResource, "/linked_patreons")
-api.add_resource(BudgetResource, "/budget")
-docs_ext.register(PatreonOAuthResource)
-docs_ext.register(LinkedPatreonListResource)
-docs_ext.register(BudgetResource)
-
-
-api.add_resource(StatsResource, "/stats")
-api.add_resource(ServerStatsResource, "/stats/<string:id>")
-api.add_resource(StatsTotalsResource, "/stats/totals")
-docs_ext.register(StatsResource)
-docs_ext.register(ServerStatsResource)
-docs_ext.register(StatsTotalsResource)
-
-# Register the swagger docs blueprint
-app.register_blueprint(get_swaggerui_blueprint("/docs", "/docs_json", config={"app_name": "BeeStation API"}))
+api.register_blueprint(bans_blueprint)
+api.register_blueprint(general_blueprint)
+api.register_blueprint(library_blueprint)
+api.register_blueprint(patreon_blueprint)
+api.register_blueprint(stats_blueprint)
 
 # Register Discord blueprint
 app.register_blueprint(discord_blueprint)
