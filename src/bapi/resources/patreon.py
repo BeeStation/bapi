@@ -1,7 +1,9 @@
-import patreon
 from bapi import cfg
 from bapi import db
 from bapi import util
+from bapi.patreon_api import exchange_oauth_code
+from bapi.patreon_api import get_identity_id
+from bapi.patreon_api import PatreonAPIError
 from bapi.schemas import APIPasswordRequiredSchema
 from bapi.schemas import BudgetSchema
 from bapi.schemas import PatreonLinkSchema
@@ -11,7 +13,6 @@ from flask import redirect
 from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint
-
 
 blp = Blueprint("patreon", "patreon", url_prefix="/")
 
@@ -24,17 +25,18 @@ class PatreonOAuthResource(MethodView):
         ckey = request.args.get("state")
 
         if code is not None and ckey is not None:
-            oauth_client = patreon.OAuth(cfg.PRIVATE["patreon"]["client_id"], cfg.PRIVATE["patreon"]["client_secret"])
+            try:
+                access_token = exchange_oauth_code(
+                    cfg.PRIVATE["patreon"]["client_id"],
+                    cfg.PRIVATE["patreon"]["client_secret"],
+                    code,
+                    f"{cfg.API['api-url']}/patreonauth",
+                )
+                user_id = get_identity_id(access_token)
+            except PatreonAPIError as error:
+                current_app.logger.error(f"Patreon OAuth failed: {error}")
+                return redirect(f"{cfg.API['website-url']}/linkpatreon?error=unknown")
 
-            tokens = oauth_client.get_tokens(code, f"{cfg.API['api-url']}/patreonauth")
-
-            if "error" in tokens:
-                raise Exception(tokens["error"])
-
-            access_token = tokens["access_token"]
-            api_client = patreon.API(access_token)
-            user_identity = api_client.get_identity().data()
-            user_id = user_identity.id()
             player = db.Player.from_ckey(ckey)
 
             if not player:
@@ -70,7 +72,11 @@ class BudgetResource(MethodView):
     @blp.response(200, BudgetSchema)
     @blp.doc(description="Get Patreon donation goal information.")
     def get(self):
-        income = util.get_patreon_income()
+        try:
+            income = util.get_patreon_income()
+        except PatreonAPIError as error:
+            current_app.logger.error(f"failed to fetch Patreon campaign income: {error}")
+            return jsonify({"error": "Patreon API unavailable"}), 502
 
         current_goal = min(
             [goal for goal in cfg.API["patreon-goals"] if goal > income] or (max(cfg.API["patreon-goals"]),)

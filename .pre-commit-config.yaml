@@ -1,11 +1,11 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: 1b2427a2b785cc4aac97c19bb4b9a0de063f9547  # frozen: 24.10.0
+    rev: 258e7dbf348bc23cb70b8cdf693481c04634ebcc  # frozen: 26.10.1
     hooks:
       - id: black
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: cef0300fd0fc4d2a87a85fa2093c6b283ea36f4b  # frozen: v5.0.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -15,25 +15,25 @@ repos:
         language_version: python3
 
   - repo: https://github.com/PyCQA/flake8
-    rev: cf1542cefa3e766670b2066dd75c4571d682a649  # frozen: 7.1.1
+    rev: 960c1d286190804104f7255b97da034446fdaac3  # frozen: 7.5.0
     hooks:
       - id: flake8
         language_version: python3
 
   - repo: https://github.com/asottile/reorder-python-imports
-    rev: fd0b4e1292716bcd12a396b86af1d1271aaaa62c  # frozen: v3.14.0
+    rev: 4690733311bbfba33558e4d50a7f0092c64d78d8  # frozen: v3.19.0
     hooks:
       - id: reorder-python-imports
 
   - repo: https://github.com/codespell-project/codespell
-    rev: 193cd7d27cd571f79358af09a8fb8997e54f8fff  # frozen: v2.3.0
+    rev: 57b21406f092110c18776e39b0bda50d37c945c8  # frozen: v2.4.3
     hooks:
     - id: codespell
       additional_dependencies:
       - tomli
 
   -   repo: https://github.com/pre-commit/mirrors-mypy
-      rev: f56614daa94d5cd733d3b7004c5df9caad267b4a  # frozen: v1.13.0
+      rev: ad26ebfa797fcb9b8f83275937c1c1d6e126719c  # frozen: v2.4.1
       hooks:
       -   id: mypy
           additional_dependencies:
