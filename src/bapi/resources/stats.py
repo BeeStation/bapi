@@ -6,7 +6,6 @@ from flask import jsonify
 from flask.views import MethodView
 from flask_smorest import Blueprint
 
-
 blp = Blueprint("stats", "stats", url_prefix="/stats")
 
 

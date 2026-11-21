@@ -8,7 +8,6 @@ from flask import jsonify
 from flask.views import MethodView
 from flask_smorest import Blueprint
 
-
 blp = Blueprint("library", "library", url_prefix="/library")
 
 

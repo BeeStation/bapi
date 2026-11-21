@@ -7,7 +7,6 @@ from bapi.schemas import PaginationSearchQuerySchema
 from flask.views import MethodView
 from flask_smorest import Blueprint
 
-
 blp = Blueprint("bans", "bans", url_prefix="/bans")
 
 
