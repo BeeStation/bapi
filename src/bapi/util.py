@@ -93,9 +93,8 @@ def fetch_server_totals():
 def get_patreon_income():
     try:
         patreon_config = cfg.PRIVATE["patreon"]
-        access_token = patreon_config["access_token"]
     except KeyError as error:
         raise PatreonAPIError(f"missing Patreon configuration: {error.args[0]}") from error
 
     campaign_id = str(patreon_config.get("campaign_id", "1671674"))
-    return get_campaign_income(access_token, campaign_id)
+    return get_campaign_income(campaign_id)

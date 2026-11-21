@@ -71,65 +71,22 @@ def get_identity_id(access_token: str) -> str:
     return identity_id
 
 
-def get_campaign_income(access_token: str, campaign_id: str) -> int:
-    url = f"{API_BASE_URL}/campaigns/{campaign_id}/members"
-    headers = {"Accept": "application/json", "Authorization": f"Bearer {access_token}"}
-    cursor: str | None = None
-    seen_cursors: set[str] = set()
-    income = 0
+def get_campaign_income(campaign_id: str) -> int:
+    payload = _request_json(
+        "GET",
+        f"https://www.patreon.com/api/campaigns/{campaign_id}",
+        headers={"Accept": "application/json", "User-Agent": "Mozilla/5.0 (compatible; BeeStation-BAPI)"},
+    )
+    data = payload.get("data")
+    if not isinstance(data, dict):
+        raise PatreonAPIError("Patreon campaign response is missing its campaign resource")
 
-    while True:
-        params = {
-            "page[count]": 1000,
-            "fields[member]": "currently_entitled_amount_cents",
-        }
-        if cursor is not None:
-            params["page[cursor]"] = cursor
+    attributes = data.get("attributes")
+    if not isinstance(attributes, dict):
+        raise PatreonAPIError("Patreon campaign response is missing its attributes")
 
-        payload = _request_json("GET", url, headers=headers, params=params)
-        members = payload.get("data")
-        if not isinstance(members, list):
-            raise PatreonAPIError("Patreon campaign members response is missing its resources")
+    pledge_sum = attributes.get("pledge_sum")
+    if isinstance(pledge_sum, bool) or not isinstance(pledge_sum, int) or pledge_sum < 0:
+        raise PatreonAPIError("Patreon campaign response has an invalid pledge sum")
 
-        for member in members:
-            if not isinstance(member, dict):
-                raise PatreonAPIError("Patreon campaign member response contains an invalid resource")
-
-            attributes = member.get("attributes")
-            if not isinstance(attributes, dict):
-                raise PatreonAPIError("Patreon campaign member response is missing attributes")
-
-            amount = attributes.get("currently_entitled_amount_cents")
-            if isinstance(amount, bool) or not isinstance(amount, int) or amount < 0:
-                raise PatreonAPIError("Patreon campaign member has an invalid pledge amount")
-
-            income += amount
-
-        cursor = _next_cursor(payload)
-        if cursor is None:
-            return income
-        if cursor in seen_cursors:
-            raise PatreonAPIError("Patreon campaign members pagination repeated a cursor")
-        seen_cursors.add(cursor)
-
-
-def _next_cursor(payload: dict[str, Any]) -> str | None:
-    meta = payload.get("meta")
-    if not isinstance(meta, dict):
-        return None
-
-    pagination = meta.get("pagination")
-    if not isinstance(pagination, dict):
-        return None
-
-    cursors = pagination.get("cursors")
-    if not isinstance(cursors, dict) or "next" not in cursors:
-        return None
-
-    cursor = cursors["next"]
-    if cursor is None:
-        return None
-    if not isinstance(cursor, str) or not cursor:
-        raise PatreonAPIError("Patreon campaign members response has an invalid pagination cursor")
-
-    return cursor
+    return pledge_sum
